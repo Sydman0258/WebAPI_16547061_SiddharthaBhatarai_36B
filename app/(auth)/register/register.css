@@ -1,0 +1,286 @@
+/* src/app/register/register.css */
+
+/* 1. Global Reset & Container */
+.reg_container {
+  min-height: 100vh;
+  background-color: #fffaf5;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 2rem 5%;
+}
+
+/* 2. Header */
+.reg_header {
+  margin-bottom: 2rem;
+}
+
+.reg_logo_top a {
+  color: #c2210a;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+/* 3. Main Layout */
+.reg_main {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding-top: 2rem;
+}
+
+/* 4. Left Side (Branding & Visuals) */
+.reg_left {
+  flex: 1;
+  display: block;
+}
+
+.reg_brand {
+  color: #c2210a;
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+}
+
+.reg_tagline {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #1a1a1a;
+  margin-bottom: 2.5rem;
+  max-width: 480px;
+}
+
+.reg_image_wrapper {
+  width: 100%;
+  height:700px;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(194, 33, 10, 0.15);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.reg_img {
+  width: 100%;
+  height: 700px;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.reg_img:hover {
+  transform: scale(1.03);
+}
+
+/* 5. Right Side (Registration Card) */
+.reg_right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.reg_card {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 28px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+}
+
+.reg_card h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: #1a1a1a;
+}
+
+.reg_subtitle {
+  color: #71717a;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+/* 6. Form Grid Logic */
+.reg_form_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns */
+  gap: 1.25rem 1rem;
+}
+
+.reg_form_group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensures specific fields take up the whole row */
+.full_width {
+  grid-column: span 2;
+  padding-right: 20px;
+}
+
+.reg_form_group label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #3f3f46;
+}
+
+/* 7. Inputs, Selects & Buttons */
+.reg_input_wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.reg_input_wrapper input,
+.reg_select {
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  border: 2px solid transparent;
+  background-color: #fff1f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #1a1a1a;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.reg_input_wrapper input::placeholder {
+  color: #a1a1aa;
+}
+
+.reg_input_wrapper input:focus,
+.reg_select:focus {
+  background-color: #ffffff;
+  border-color: #fecaca;
+  box-shadow: 0 0 0 4px rgba(194, 33, 10, 0.05);
+}
+
+.reg_select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23c2210a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2rem;
+}
+.reg_terms {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.checkbox_container {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox_container input {
+  margin-top: 4px;
+  cursor: pointer;
+  accent-color: #c2210a; /* Sets the checkbox color to match your brand */
+  width: 16px;
+  height: 16px;
+}
+
+.terms_text {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #71717a;
+}
+
+.terms_text a {
+  color: #c2210a;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.terms_text a:hover {
+  text-decoration: underline;
+}
+
+.reg_submit_btn {
+  grid-column: span 2;
+  width: 100%;
+  background-color: #c2210a;
+  color: white;
+  padding: 1.1rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.reg_submit_btn:hover {
+  background-color: #a31b08;
+}
+
+.reg_submit_btn:active {
+  transform: scale(0.98);
+}
+
+/* 8. Footer Links */
+.login_prompt {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #71717a;
+}
+
+.login_prompt a {
+  color: #c2210a;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.login_prompt a:hover {
+  text-decoration: underline;
+}
+
+/* 9. Responsive Adjustments */
+@media (max-width: 1024px) {
+  .reg_main {
+    gap: 2rem;
+  }
+  .reg_tagline {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 850px) {
+  .reg_left {
+    display: none; /* Focus purely on the form for mobile */
+  }
+  
+  .reg_container {
+    padding: 1.5rem;
+  }
+
+  .reg_card {
+    padding: 2rem 1.5rem;
+    box-shadow: none;
+    background: transparent;
+  }
+}
+
+@media (max-width: 480px) {
+  .reg_form_grid {
+    grid-template-columns: 1fr; /* Stack everything */
+  }
+  
+  .full_width, .reg_submit_btn {
+    grid-column: span 1;
+  }
+}

@@ -1,0 +1,179 @@
+/* src/app/login/login.css */
+.login_container {
+    min-height: 100vh;
+    background-color: #fffaf5;
+    /* Soft cream background from the image */
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', sans-serif;
+    padding: 2rem 5%;
+}
+
+.login_header {
+    margin-bottom: 4rem;
+}
+.login_logo_top a {
+  color: inherit;         /* Takes the #c2210a from the parent */
+  text-decoration: none;  /* Removes the underline */
+}
+
+.login_logo_top {
+    color: #c2210a;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.5rem;
+    text-align: left;
+}
+
+.login_main {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Left Side */
+.login_left {
+    flex: 1;
+}
+
+.login_brand {
+    color: #c2210a;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.login_tagline {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1a1a1a;
+    margin-bottom: 2.5rem;
+    max-width: 400px;
+}
+
+.login_image_wrapper {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.login_pizza_img {
+    width: 100%;
+    display: block;
+    transition: transform 0.5s ease;
+}
+:hover.login_pizza_img{
+    transform: scale(1.03);
+}
+
+/* Right Side Card */
+.login_right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.login_card {
+    background: white;
+    padding: 3rem;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.05);
+}
+
+.login_card h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+
+.login_subtitle {
+    color: #71717a;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.form_group {
+    margin-bottom: 1.5rem;
+}
+
+.form_group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #4b5563;
+}
+
+.input_wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input_icon {
+    position: absolute;
+    left: 1rem;
+    color: #9ca3af;
+}
+
+.form_group input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.8rem;
+    border: none;
+    background-color: #fff1f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    color:#1a1a1a
+}
+
+.password_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.forgot_link {
+    color: #c2210a;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login_submit_btn {
+    width: 100%;
+    background-color: #c2210a;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    box-shadow: 0 4px 14px rgba(194, 33, 10, 0.3);
+}
+
+.signup_prompt {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #71717a;
+}
+
+.signup_prompt a {
+    color: #c2210a;
+    font-weight: 700;
+    text-decoration: none;
+}
+
