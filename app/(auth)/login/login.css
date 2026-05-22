@@ -12,9 +12,12 @@
 .login_header {
     margin-bottom: 4rem;
 }
+
 .login_logo_top a {
-  color: inherit;         /* Takes the #c2210a from the parent */
-  text-decoration: none;  /* Removes the underline */
+    color: inherit;
+    /* Takes the #c2210a from the parent */
+    text-decoration: none;
+    /* Removes the underline */
 }
 
 .login_logo_top {
@@ -70,7 +73,8 @@
     display: block;
     transition: transform 0.5s ease;
 }
-:hover.login_pizza_img{
+
+:hover.login_pizza_img {
     transform: scale(1.03);
 }
 
@@ -134,13 +138,27 @@
     background-color: #fff1f0;
     border-radius: 8px;
     font-size: 1rem;
-    color:#1a1a1a
+    color: #1a1a1a
 }
 
 .password_header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.password_toggle_btn {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0;
 }
 
 .forgot_link {
@@ -176,4 +194,3 @@
     font-weight: 700;
     text-decoration: none;
 }
-
