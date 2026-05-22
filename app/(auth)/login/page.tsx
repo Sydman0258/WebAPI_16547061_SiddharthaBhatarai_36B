@@ -1,12 +1,13 @@
 "use client";
 import Link from 'next/link';
 import './login.css';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, EyeOff, Eye } from 'lucide-react';
 import loginZod from '../_component/loginZod';
-import { email} from 'zod';
+import { useTogglePassword } from '@/hooks/tooglepassword';
 
 export default function LoginPage() {
-  const { register, onSubmit, formState: { errors , isSubmitting }} = loginZod();
+  const { register, onSubmit, formState: { errors, isSubmitting } } = loginZod();
+  const { inputType, isVisible, toggleVisibility } = useTogglePassword();
   return (
     <div className="login_container">
       <header className="login_header">
@@ -19,10 +20,10 @@ export default function LoginPage() {
             Your favorite meals, delivered with speed and care.
           </p>
           <div className="login_image_wrapper">
-            <img 
-              src="https://png.pngtree.com/thumb_back/fh260/background/20240720/pngtree-taking-slice-picture-of-prepared-delicious-pizza-with-sausage-rings-and-image_15902897.jpg" 
-              alt="Delicious Pizza" 
-              className="login_pizza_img" 
+            <img
+              src="https://png.pngtree.com/thumb_back/fh260/background/20240720/pngtree-taking-slice-picture-of-prepared-delicious-pizza-with-sausage-rings-and-image_15902897.jpg"
+              alt="Delicious Pizza"
+              className="login_pizza_img"
             />
           </div>
         </div>
@@ -31,17 +32,17 @@ export default function LoginPage() {
           <div className="login_card">
             <h2>Welcome Back</h2>
             <p className="login_subtitle">Log in to your account to continue ordering.</p>
-            
+
             <form onSubmit={onSubmit}>
               <div className="form_group">
                 <label>Email Address</label>
                 <div className="input_wrapper">
                   <Mail size={18} className="input_icon" />
                   <input type="email" placeholder="name@example.com"
-                  {...register("email")} />
+                    {...register("email")} />
                 </div>
-                {errors.email&&(
-                  <span className='error_message' style={{color:'#FF0000'}}>{errors.email.message}</span>
+                {errors.email && (
+                  <span className='error_message' style={{ color: '#FF0000' }}>{errors.email.message}</span>
                 )}
               </div>
 
@@ -52,16 +53,18 @@ export default function LoginPage() {
                 </div>
                 <div className="input_wrapper">
                   <Lock size={18} className="input_icon" />
-                  <input type="password" placeholder="••••••••"
-                  {...register("password")} />
-
+                  <input type={inputType} placeholder="••••••••"
+                    {...register("password")} />
+                  <button type='button' className="password_toggle_btn" onClick={toggleVisibility } aria-label={isVisible ? "Hide password" : "Show password"}>
+                    {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
-                <span className='error_message' style={{color:'#FF0000'}}>{errors.password?.message}</span>
+                <span className='error_message' style={{ color: '#FF0000' }}>{errors.password?.message}</span>
               </div>
 
               <button type="submit" className="login_submit_btn" disabled={isSubmitting}>
-                {isSubmitting?'Loggin in' :'Login'}
-                </button>
+                {isSubmitting ? 'Loggin in' : 'Login'}
+              </button>
             </form>
 
             <p className="signup_prompt">
@@ -71,7 +74,7 @@ export default function LoginPage() {
         </div>
       </main>
 
-      
+
     </div>
   );
 }
