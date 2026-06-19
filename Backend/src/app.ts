@@ -1,9 +1,11 @@
 import express,{ Application, NextFunction } from "express";
-import customerRoute from "./routes/customer.route";
+import userRoute from "./routes/user.route";
 import { Request,Response } from "express";
 import { HttpException } from "./exceptions/http-exceptions";
 import { ApiResponseHelper } from "./utils/api-response";
 import cors from 'cors';
+import path from "path";
+import restaurantRoute from "./routes/restaurant.route";
 
 const app:Application=express();
 let corsOption={
@@ -14,8 +16,10 @@ let corsOption={
 app.use(cors(corsOption));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-app.use("/api/c1/customer",customerRoute);
+app.use("/api/c1/customer",userRoute);
+app.use("/api/v1/restaurant",restaurantRoute)
 
 app.use(
     (req: Request, res: Response) => {
