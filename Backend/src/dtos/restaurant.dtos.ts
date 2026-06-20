@@ -8,8 +8,6 @@ export const createRestaurantDTO=RestaurantSchema.pick({
     status:true,
     openingHours:true,
     foodTypes:true,
-}).extend({
-  userId: z.string(),
 });
 
 export type createRestaurantDTO=z.infer<typeof createRestaurantDTO>;

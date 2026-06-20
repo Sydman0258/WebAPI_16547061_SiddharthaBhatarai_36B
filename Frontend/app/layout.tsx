@@ -1,6 +1,7 @@
 
 import { AuthProvider } from "@/lib/context/authContext";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 
 
 
@@ -14,6 +15,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AuthProvider>
        {children}
+       <ToastContainer/>
        </AuthProvider>
      </body>
     </html>

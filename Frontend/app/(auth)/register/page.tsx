@@ -102,6 +102,14 @@ export default function RegisterPage() {
                                     </div>
                                     {errors.email && <p className='error_message'>{errors.email.message}</p>}
                                 </div>
+                                                                <div className="reg_form_group full_width">
+                                    <label>Phone Nunber</label>
+                                    <div className="reg_input_wrapper">
+                                        <input type="number" placeholder="9874566321" required
+                                            {...register("phoneNumber")} />
+                                    </div>
+                                    {errors.phoneNumber && <p className='error_message'>{errors.phoneNumber.message}</p>}
+                                </div>
 
                                 <div className="reg_form_group full_width">
                                     <label>Password</label>

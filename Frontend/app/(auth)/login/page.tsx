@@ -1,10 +1,11 @@
 "use client";
+
 import Link from 'next/link';
 import './login.css';
 import { Mail, Lock, EyeOff, Eye } from 'lucide-react';
 import loginZod from '../_component/loginZod';
 import { useTogglePassword } from '@/hooks/tooglepassword';
-import { useState, useTransition } from 'react';
+import { useState, useEffect } from 'react'; // 1. Import useEffect
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/authContext';
 import { loginUser } from '@/lib/actions/auth_actions';
@@ -13,40 +14,40 @@ import { LoginFormData } from '../_component/login_register_schema';
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = loginZod();
   const { inputType, isVisible, toggleVisibility } = useTogglePassword();
-      const [isPending, startTransition] = useTransition();
-    const [error, setError] = useState('');
-    const router = useRouter();
-    const { checkAuth } = useAuth();
+  const [error, setError] = useState('');
+  const [mounted, setMounted] = useState(false); // 2. Add mounted state
+  const router = useRouter();
+  const { setUser, setIsAuthenticated } = useAuth();
 
-    const onSubmit = (data: LoginFormData) => {
-      
-        setError('');
-        startTransition(
-            async () => {
-                try { const result=await loginUser(data);
-                    if(result.success){
-                      const user = await checkAuth();
-                      console.log('checkAuth returned user:', user);
-                      const role = user?.role;
-                      if(!user){
-                        setError('Authentication succeeded but auth check returned no user.');
-                        return;
-                      }
-                      if(role === 'customer') router.push('/customer/');
-                      else if(role === 'driver') router.push('/driver/');
-                      else if(role === 'restaurant') router.push('/restaurant/');
-                      else router.push('/dashboard');
-                    
-                    }else{
-                        setError(result.message||'Login Failed');
-                    }
-                    
-                } catch (error: any) {
-                    setError(error?.message || 'Login failed');
-                }
-            }
-        );
+  // 3. Set mounted to true on initial client load
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const onSubmit = async (data: LoginFormData) => {
+    setError('');
+    try {
+      const result = await loginUser(data);
+      if (result.success) {
+        const token = result.data?.token;
+        const payload = JSON.parse(atob(token.split('.')[1])); 
+        const role = payload.role; 
+        
+        setUser(result.data.customer);
+        setIsAuthenticated(true);
+        
+        if (role === 'customer') router.replace('/customer');
+        else if (role === 'driver') router.replace('/driver');
+        else if (role === 'restaurant') router.replace('/restaurant');
+        else router.replace('/dashboard');
+      } else {
+        setError(result.message || 'Login Failed');
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Login failed');
     }
+  };
+
   return (
     <div className="login_container">
       <header className="login_header">
@@ -72,13 +73,18 @@ export default function LoginPage() {
             <h2>Welcome Back</h2>
             <p className="login_subtitle">Log in to your account to continue ordering.</p>
 
+            {error && (
+              <div style={{ color: '#FF0000', marginBottom: '1rem', fontSize: '0.9rem', fontWeight: 600 }}>
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="form_group">
                 <label>Email Address</label>
                 <div className="input_wrapper">
                   <Mail size={18} className="input_icon" />
-                  <input type="email" placeholder="name@example.com"
-                    {...register("email")} />
+                  <input type="email" placeholder="name@example.com" {...register("email")} />
                 </div>
                 {errors.email && (
                   <span className='error_message' style={{ color: '#FF0000' }}>{errors.email.message}</span>
@@ -92,17 +98,29 @@ export default function LoginPage() {
                 </div>
                 <div className="input_wrapper">
                   <Lock size={18} className="input_icon" />
-                  <input type={inputType} placeholder="••••••••"
-                    {...register("password")} />
-                  <button type='button' className="password_toggle_btn" onClick={toggleVisibility } aria-label={isVisible ? "Hide password" : "Show password"}>
-                    {isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
+                  {/* 4. Default input to password type on server to guarantee server match */}
+                  <input 
+                    type={mounted ? inputType : "password"} 
+                    placeholder="••••••••"
+                    {...register("password")} 
+                  />
+                  <button 
+                    type='button' 
+                    className="password_toggle_btn" 
+                    onClick={toggleVisibility} 
+                    aria-label={isVisible ? "Hide password" : "Show password"}
+                  >
+                    {/* 5. Only switch the icon once the client layout is completely mounted */}
+                    {mounted && isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                 </div>
-                <span className='error_message' style={{ color: '#FF0000' }}>{errors.password?.message}</span>
+                {errors.password && (
+                  <span className='error_message' style={{ color: '#FF0000' }}>{errors.password?.message}</span>
+                )}
               </div>
 
               <button type="submit" className="login_submit_btn" disabled={isSubmitting}>
-                {isSubmitting ? 'Loggin in' : 'Login'}
+                {isSubmitting ? 'Logging in...' : 'Login'}
               </button>
             </form>
 
@@ -112,8 +130,6 @@ export default function LoginPage() {
           </div>
         </div>
       </main>
-
-
     </div>
   );
 }

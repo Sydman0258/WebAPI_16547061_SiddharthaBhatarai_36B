@@ -14,7 +14,6 @@ router.get("/:id", restaurantController.getRestaurantById);
 router.post(
   "/create",
   authorizedMiddleware,
-  uploads.single("restaurantImage"),
   restaurantController.createRestaurant
 );
 
