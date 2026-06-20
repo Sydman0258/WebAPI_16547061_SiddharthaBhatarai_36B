@@ -117,7 +117,7 @@ export default function UpdateUserForm({ user }: { user: any }) {
 
                         {/* Profile Image Section */}
                         <div className="flex flex-col sm:flex-row items-center gap-5 bg-orange-50/20 border border-dashed border-orange-100 rounded-2xl p-5 mb-2">
-                            <div className="relative group w-24 h-24 flex-shrink-0">
+                            <div className="relative group w-24 h-24 shrink-0">
                                 {previewImage ? (
                                     <div className="w-24 h-24 relative">
                                         <img

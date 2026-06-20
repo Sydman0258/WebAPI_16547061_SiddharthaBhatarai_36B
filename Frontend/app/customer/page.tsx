@@ -119,7 +119,7 @@ export default function DashboardPage() {
           <div className="space-y-6">
             
             {/* Search Banner (Red to Orange Gradient) */}
-            <div className="bg-gradient-to-br from-red-600 to-orange-500 text-white rounded-2xl p-6 shadow-sm">
+            <div className="bg-linear-to-br from-red-600 to-orange-500 text-white rounded-2xl p-6 shadow-sm">
               <h3 className="text-xl font-black mb-2">Craving something else?</h3>
               <p className="text-red-50 text-sm mb-4">Explore thousands of local restaurants delivering near you right now.</p>
               <div className="relative">
