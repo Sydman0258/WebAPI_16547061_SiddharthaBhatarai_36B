@@ -6,6 +6,13 @@ import { ApiResponseHelper } from "./utils/api-response";
 import cors from 'cors';
 import path from "path";
 import restaurantRoute from "./routes/restaurant.route";
+import driverRoute from "./routes/drivers.route";
+
+import menuItemRoute from "./routes/menu.route";
+import orderRoute from "./routes/order.route";
+import reviewRoute from "./routes/review.route";
+
+
 
 const app:Application=express();
 let corsOption={
@@ -18,8 +25,12 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-app.use("/api/c1/customer",userRoute);
-app.use("/api/v1/restaurant",restaurantRoute)
+app.use("/api/v1/customer",userRoute);
+app.use("/api/v1/restaurant",restaurantRoute);
+app.use("/api/v1/driver", driverRoute);
+app.use("/api/v1/menu", menuItemRoute);
+app.use("/api/v1/order", orderRoute);
+app.use("/api/v1/review", reviewRoute);
 
 app.use(
     (req: Request, res: Response) => {

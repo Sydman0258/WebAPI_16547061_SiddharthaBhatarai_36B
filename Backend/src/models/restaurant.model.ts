@@ -1,9 +1,9 @@
-import { Document ,model,Schema} from "mongoose";
+import mongoose, { Document ,model,Schema} from "mongoose";
 import { RestaurantType } from "../types/restaurant.types";
 
 export interface  IRestaurant extends Omit< RestaurantType,'userId'>,Document{
 
-    userId:Schema.Types.ObjectId;
+    userId:mongoose.Types.ObjectId;
 }
 
 const  restaurantModelSchema:Schema=new Schema<IRestaurant>({
