@@ -1,15 +1,14 @@
-// app/restaurant/onboarding/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createRestaurant } from "@/lib/api/restaurant";
 
 export default function RestaurantOnboarding() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Form state tied directly to your createRestaurantDTO fields
     const [formData, setFormData] = useState({
         restaurantName: "",
         description: "",
@@ -50,31 +49,18 @@ export default function RestaurantOnboarding() {
         setLoading(true);
         setError(null);
 
-        // Map data to match the expected createRestaurantDTO format
         const payload = {
             ...formData,
-            status: "active", // Default fallback status matching your schema
+            status: "active",
         };
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/restaurant/create`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    // The middleware or an interceptor can inject the header token, 
-                    // or pull it directly if required depending on your api library wrapper.
-                },
-                body: JSON.stringify(payload),
-            });
-
-            if (!res.ok) {
-                const errData = await res.json();
-                throw new Error(errData?.message || "Failed to register restaurant profile");
+            const result = await createRestaurant(payload);
+            if (result?.success) {
+                router.push("/restaurant/");
+            } else {
+                setError(result?.message || "Failed to register restaurant profile");
             }
-
-            // Successfully created! Trigger a refresh so server components fetch new state
-            router.refresh();
-            router.push("/restaurant");
         } catch (err: any) {
             setError(err.message || "An unexpected error occurred.");
         } finally {
@@ -111,7 +97,7 @@ export default function RestaurantOnboarding() {
                                 required
                                 value={formData.restaurantName}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
+                                className="mt-1 block w-full rounded-md border text-black border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
                                 placeholder="The Flavor Palace"
                             />
                         </div>
@@ -125,7 +111,7 @@ export default function RestaurantOnboarding() {
                                 required
                                 value={formData.description}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
+                                className="mt-1 block w-full text-black rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
                                 placeholder="Tell customers about your kitchen, signature dishes..."
                             />
                         </div>
@@ -139,7 +125,7 @@ export default function RestaurantOnboarding() {
                                 required
                                 value={formData.location}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
+                                className="mt-1 block w-full text-black rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
                                 placeholder="123 Main Street, City"
                             />
                         </div>
@@ -153,11 +139,11 @@ export default function RestaurantOnboarding() {
                                 required
                                 value={formData.openingHours}
                                 onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
+                                className="mt-1 block w-full text-black rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
                             />
                         </div>
 
-                        {/* Food Types (Tags management) */}
+                        {/* Food Types */}
                         <div>
                             <label className="block text-sm font-semibold text-gray-700">Cuisine / Food Types</label>
                             <p className="text-xs text-gray-400 mb-1">Type a cuisine (e.g., Italian, Vegan) and press Enter</p>
@@ -166,7 +152,7 @@ export default function RestaurantOnboarding() {
                                 value={currentFoodType}
                                 onChange={(e) => setCurrentFoodType(e.target.value)}
                                 onKeyDown={handleAddFoodType}
-                                className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
+                                className="block w-full text-black rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-orange-500 sm:text-sm"
                                 placeholder="Add food tags..."
                             />
                             <div className="mt-2 flex flex-wrap gap-2">

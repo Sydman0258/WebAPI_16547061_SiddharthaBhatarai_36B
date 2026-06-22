@@ -13,7 +13,7 @@ export default async function Page() {
     }
     return (
         <div>
-            Update Form
+     
             <UpdateForm user={userData.data} />
         </div>
     );

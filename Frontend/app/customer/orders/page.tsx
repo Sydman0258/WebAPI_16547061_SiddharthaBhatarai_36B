@@ -2,6 +2,7 @@ import { getUserData } from "@/lib/actions/auth_actions";
 import { cookies } from "next/headers";
 import { API } from "@/lib/api/endpoint";
 import OrderCard from "./_components/OrderCard";
+import Navbar from "../_components/Navbar";
 
 async function getMyOrders(token: string) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API.ORDER.GET_MY}`, {
@@ -20,6 +21,7 @@ export default async function OrdersPage() {
 
     return (
         <div className="min-h-screen bg-white">
+            <Navbar/>
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-8 border-b border-gray-100 pb-5">
                     <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">My Orders 📦</h1>

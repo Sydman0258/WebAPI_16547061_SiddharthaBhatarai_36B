@@ -7,7 +7,6 @@ export const register = async (data: any) => {
        return  response.data;
     }
    catch (e: any) {
-        console.error("❌ BACKEND REGISTRATION ERROR:", e?.response?.data || e?.message);
 
         const serverError = e?.response?.data?.message 
             || e?.response?.data?.error 
@@ -23,8 +22,6 @@ export const login=async(data:any)=>{
         return response.data;
     }
    catch (e: any) {
-        // 👇 Add this to read the exact backend feedback in your console
-        console.error("❌ BACKEND LOGIN ERROR:", e?.response?.data || e?.message);
 
         const serverError = e?.response?.data?.message 
             || e?.response?.data?.error 

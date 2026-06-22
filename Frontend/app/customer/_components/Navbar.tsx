@@ -3,6 +3,7 @@
 import './Navbar.css';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '@/lib/context/authContext';
 
 const NAV_LINKS = [
   { href: '/customer', label: 'Home', icon: '' },
@@ -40,10 +41,7 @@ export default function Navbar() {
     setMenuOpen(false);
   }, [pathname]);
 
-  const handleLogout = () => {
-    router.push('/');
-  };
-
+ const { logout } = useAuth(); 
   const isActive = (href: string) => {
     if (href === '/customer') return pathname === href;
     return pathname === href || pathname.startsWith(`${href}/`);
@@ -92,7 +90,7 @@ export default function Navbar() {
         
 
             <li>
-              <button className="nav-link nav-logout" onClick={handleLogout}>
+              <button className="nav-link nav-logout" onClick={logout}>
                 Log out
               </button>
             </li>
@@ -128,7 +126,7 @@ export default function Navbar() {
           <div className="mobile-divider" />
          
           <div className="mobile-divider" />
-          <button className="mobile-link mobile-logout" onClick={handleLogout}>
+          <button className="mobile-link mobile-logout" onClick={logout}>
             Log out
           </button>
         </div>

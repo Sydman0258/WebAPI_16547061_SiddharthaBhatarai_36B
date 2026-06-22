@@ -18,7 +18,6 @@ export async function registerUser(data: RegisterFormData) {
         }
         return { success: false, message: result.message || 'Registration failed' };
     } catch (error: any) {
-                console.log("Register error:", error); // 👈 and this
 
         return { success: false, message: error.message || 'Registration failed' };
     }
@@ -36,7 +35,7 @@ export async function loginUser(data: LoginFormData) {
 
             await setCookieToken(token);
             // backend returns the created customer under `customer`, not `user`
-            await storeUserData(res.data.customer);
+            await storeUserData(res.data.user);
            
             return {
                 success: true,

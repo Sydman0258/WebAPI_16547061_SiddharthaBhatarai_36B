@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/authContext';
 import { loginUser } from '@/lib/actions/auth_actions';
 import { LoginFormData } from '../_component/login_register_schema';
+import { getMyRestaurant } from '@/lib/api/restaurant';
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = loginZod();
@@ -19,34 +20,45 @@ export default function LoginPage() {
   const router = useRouter();
   const { setUser, setIsAuthenticated } = useAuth();
 
-  // 3. Set mounted to true on initial client load
+  // 3. Set mounted to true on initial client ]
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const onSubmit = async (data: LoginFormData) => {
+const onSubmit = async (data: LoginFormData) => {
     setError('');
     try {
-      const result = await loginUser(data);
-      if (result.success) {
-        const token = result.data?.token;
-        const payload = JSON.parse(atob(token.split('.')[1])); 
-        const role = payload.role; 
-        
-        setUser(result.data.customer);
-        setIsAuthenticated(true);
-        
-        if (role === 'customer') router.replace('/customer');
-        else if (role === 'driver') router.replace('/driver');
-        else if (role === 'restaurant') router.replace('/restaurant');
-        else router.replace('/dashboard');
-      } else {
-        setError(result.message || 'Login Failed');
-      }
+        const result = await loginUser(data);
+        if (result.success) {
+            const token = result.data?.token;
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const role = payload.role;
+
+            setUser(result.data.user);
+            setIsAuthenticated(true);
+
+            if (role === 'customer') {
+                router.replace('/customer');
+            } else if (role === 'driver') {
+                router.replace('/driver');
+            } else if (role === 'restaurant') {
+                // ✅ Check if restaurant already exists
+                const restaurant = await getMyRestaurant();
+                if (restaurant?.success && restaurant?.data) {
+                    router.replace('/restaurant/dashboard');
+                } else {
+                    router.replace('/restaurant/onboarding');
+                }
+            } else {
+                router.replace('/dashboard');
+            }
+        } else {
+            setError(result.message || 'Login Failed');
+        }
     } catch (err: any) {
-      setError(err?.message || 'Login failed');
+        setError(err?.message || 'Login failed');
     }
-  };
+};
 
   return (
     <div className="login_container">
