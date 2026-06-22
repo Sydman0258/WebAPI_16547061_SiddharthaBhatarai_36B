@@ -3,11 +3,11 @@ import z from "zod";
 export const createMenuItemDTO = z.object({
     name: z.string().min(1),
     description: z.string().min(1),
-    price: z.number().positive(),
+    price: z.coerce.number().positive(),
     category: z.string().min(1),
-    imageUrl: z.string().url().optional(),
+    imageUrl: z.string().optional(),
     isAvailable: z.boolean().default(true),
-    preparationTime: z.number().int().positive(),
+    preparationTime: z.coerce.number().int().positive(),
 });
 
 export type createMenuItemDTO = z.infer<typeof createMenuItemDTO>;

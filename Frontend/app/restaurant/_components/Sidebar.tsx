@@ -1,135 +1,59 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  ClipboardList,
-  UtensilsCrossed,
-  BarChart3,
-  MessageSquareText,
-  Store,
-  Settings,
-  LogOut,
-  LifeBuoy,
-} from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 
-const Sidebar = () => {
-  const pathname = usePathname();
+const NAV = [
+    { href: "/restaurant", label: "Dashboard", icon: "📊" },
+    { href: "/restaurant/orders", label: "Orders", icon: "📦" },
+    { href: "/restaurant/menu", label: "Menu", icon: "🍽️" },
+    { href: "/restaurant/review", label: "Reviews", icon: "⭐" },
+    { href: "/restaurant/profile", label: "Profile", icon: "🏪" },
+    { href: "/restaurant/settings", label: "Settings", icon: "⚙️" },
+];
 
-  const menuItems = [
-    {
-      name: "Dashboard",
-      icon: <LayoutDashboard size={20} />,
-      href: "/restaurant",
-    },
-    {
-      name: "Orders",
-      icon: <ClipboardList size={20} />,
-      href: "/restaurant/orders",
-    },
-    {
-      name: "Menu",
-      icon: <UtensilsCrossed size={20} />,
-      href: "/restaurant/menu",
-    },
-    {
-      name: "Analytics",
-      icon: <BarChart3 size={20} />,
-      href: "/analytics",
-    },
-    {
-      name: "Reviews",
-      icon: <MessageSquareText size={20} />,
-      href: "/reviews",
-    },
-    {
-      name: "Profile",
-      icon: <Store size={20} />,
-      href: "/profile",
-    },
-  ];
+export default function Sidebar() {
+    const router = useRouter();
+    const pathname = usePathname();
 
-  return (
-    <aside className="flex flex-col h-screen w-64 bg-white border-r border-gray-100 sticky top-0 left-0 overflow-y-auto">
-      <Link
-        href="/"
-        className="p-6 block hover:opacity-90 transition-opacity"
-      >
-        <h1 className="text-[#A34F11] text-xl font-bold tracking-tight">
-          GrubGo
-        </h1>
+    const isActive = (href: string) => {
+        if (href === "/restaurant") return pathname === href;
+        return pathname.startsWith(href);
+    };
 
-        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">
-          Fish and chip Shop
-        </p>
-      </Link>
-
-      <nav className="flex-1 mt-2">
-        {menuItems.map((item) => {
-          const isActive = pathname === item.href;
-
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`flex items-center px-6 py-4 transition-all relative group ${
-                isActive
-                  ? "bg-[#FFEDE1] text-[#A34F11]"
-                  : "text-gray-500 hover:bg-gray-50"
-              }`}
+    return (
+        <aside className="w-64 min-h-screen bg-white border-r border-gray-100 flex flex-col py-6 px-4">
+            <div
+                className="flex items-center gap-2 mb-8 cursor-pointer"
+                onClick={() => router.push("/restaurant")}
             >
-              {/* Icon */}
-              <span
-                className={`mr-4 ${
-                  isActive
-                    ? "text-[#A34F11]"
-                    : "text-gray-400 group-hover:text-gray-600"
-                }`}
-              >
-                {item.icon}
-              </span>
-
-              {/* Text */}
-              <span className="font-semibold text-sm">{item.name}</span>
-
-              {/* Active Indicator */}
-              {isActive && (
-                <div className="absolute right-0 top-0 h-full w-1.5 bg-[#A34F11] rounded-l-md" />
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Bottom Actions */}
-      <div className="p-4 border-t border-gray-50 space-y-1">
-        <Link
-          href="/settings"
-          className="flex items-center px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl transition-colors"
-        >
-          <Settings size={20} className="mr-4 text-gray-400" />
-
-          <span className="text-sm font-semibold">Settings</span>
-        </Link>
-
-        <button className="w-full flex items-center px-4 py-3 text-gray-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors group">
-          <LogOut
-            size={20}
-            className="mr-4 text-gray-400 group-hover:text-red-500"
-          />
-
-          <span className="text-sm font-semibold">Logout</span>
-        </button>
-
-        <button className="w-full mt-4 bg-[#A34F11] text-white py-3.5 rounded-2xl font-bold shadow-md shadow-[#A34F11]/20 hover:bg-[#8B420E] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm">
-          <LifeBuoy size={18} />
-          Support Center
-        </button>
-      </div>
-    </aside>
-  );
-};
-
-export default Sidebar;
+                <span className="text-2xl">🍽️</span>
+                <span className="text-lg font-black text-gray-900">
+                    Grub<span className="text-red-600">GO</span>
+                </span>
+            </div>
+            <nav className="flex-1 space-y-1">
+                {NAV.map(({ href, label, icon }) => (
+                    <button
+                        key={href}
+                        onClick={() => router.push(href)}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                            isActive(href)
+                                ? "bg-red-50 text-red-600 font-semibold"
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        }`}
+                    >
+                        <span>{icon}</span>
+                        {label}
+                    </button>
+                ))}
+            </nav>
+            <button
+                onClick={() => router.push("/login")}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all"
+            >
+                <span>🚪</span>
+                Log out
+            </button>
+        </aside>
+    );
+}

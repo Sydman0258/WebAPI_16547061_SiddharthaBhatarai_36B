@@ -19,7 +19,7 @@ export class RestaurantController {
         ...parseResult.data,
         userId: req.user?._id,
         ...(req.file?.filename && {
-          restaurantImage: "/uploads/" + req.file.filename,
+          restaurantImage: "/uploads/restaurant" + req.file.filename,
         }),
       };
       const restaurant = await restaurantService.createRestaurant(restaurantData);

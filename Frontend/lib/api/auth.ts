@@ -7,7 +7,6 @@ export const register = async (data: any) => {
        return  response.data;
     }
    catch (e: any) {
-        // 👇 Add this to read the exact backend feedback in your console
         console.error("❌ BACKEND REGISTRATION ERROR:", e?.response?.data || e?.message);
 
         const serverError = e?.response?.data?.message 
@@ -38,7 +37,7 @@ export const login=async(data:any)=>{
 
 export const getUser = async ()=>{
     try{
-        const response = await axiosInstance.get(API.AUTH.GETUSER);
+        const response = await axiosInstance.get(API.AUTH.GET_PROFILE);
         return response.data;
         // response.data -> response ko body
     }catch (error: any) {
