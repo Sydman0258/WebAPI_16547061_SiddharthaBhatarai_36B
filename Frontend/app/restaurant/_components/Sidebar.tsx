@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/lib/context/authContext";
 import { useRouter, usePathname } from "next/navigation";
 
 const NAV = [
@@ -19,6 +20,7 @@ export default function Sidebar() {
         if (href === "/restaurant") return pathname === href;
         return pathname.startsWith(href);
     };
+     const { logout } = useAuth(); 
 
     return (
         <aside className="w-64 min-h-screen bg-white border-r border-gray-100 flex flex-col py-6 px-4">
@@ -48,7 +50,7 @@ export default function Sidebar() {
                 ))}
             </nav>
             <button
-                onClick={() => router.push("/login")}
+                onClick={logout}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all"
             >
                 <span>🚪</span>

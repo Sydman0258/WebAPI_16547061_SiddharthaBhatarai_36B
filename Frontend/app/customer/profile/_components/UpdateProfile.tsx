@@ -27,7 +27,7 @@ export default function UpdateUserForm({ user }: { user: any }) {
         resolver: zodResolver(UserUpdateSchema),
         values: {
             fullname: user?.fullname || "",
-            password: "", // Kept empty for security/re-entry
+            password: "", 
             address: user?.address || "",
         },
     });
@@ -66,7 +66,7 @@ export default function UpdateUserForm({ user }: { user: any }) {
         if (data.fullname) {
             formData.append('fullname', data.fullname);
         }
-        if (data.password) {
+        if (data.password?.trim()) {
             formData.append('password', data.password);
         }
         if (data.address) {

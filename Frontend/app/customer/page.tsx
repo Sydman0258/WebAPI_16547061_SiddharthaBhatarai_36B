@@ -6,7 +6,7 @@ export default async function DashboardPage() {
     const user = result?.data;
     const name = user?.fullname || user?.username || user?.email || "User";
     const address = user?.address || user?.savedAddress || "No address saved";
-
+const firstName=name.split(" ")[0];
     return (
         <div className="min-h-screen bg-white text-gray-900">
 <Navbar/>
@@ -15,7 +15,7 @@ export default async function DashboardPage() {
                 {/* Top Header Section */}
                 <div className="mb-8 border-b border-gray-100 pb-5">
                     <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-                        Hungry, {name}? 🍕
+                        Hungry, {firstName}? 
                     </h1>
                     <p className="mt-2 text-sm text-gray-500">
                         Delivering to: <span className="font-semibold text-gray-700">{address}</span>
