@@ -34,7 +34,6 @@ export async function loginUser(data: LoginFormData) {
             console.log("Received token:", token);
 
             await setCookieToken(token);
-            // backend returns the created customer under `customer`, not `user`
             await storeUserData(res.data.user);
            
             return {

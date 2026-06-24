@@ -43,7 +43,7 @@ export class userService {
         const token = jwt.sign(
             { id: user._id, email: user.email, role: user.role },
             JWT_KEY,
-            { expiresIn: "30m" }
+            { expiresIn: "300m" }
         );
         return{token,user};
     }

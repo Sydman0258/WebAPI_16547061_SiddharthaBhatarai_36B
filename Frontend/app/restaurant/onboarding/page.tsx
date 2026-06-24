@@ -62,7 +62,7 @@ export default function RestaurantOnboarding() {
                 setError(result?.message || "Failed to register restaurant profile");
             }
         } catch (err: any) {
-            setError(err.message || "An unexpected error occurred.");
+            setError(err.message || "An unexpected error occcurred.");
         } finally {
             setLoading(false);
         }

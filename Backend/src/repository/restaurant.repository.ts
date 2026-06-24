@@ -23,10 +23,10 @@ export class RestaurantMongoRepository implements IRestaurantRepository {
     return await restaurantModel.find().populate("userId");
   }
 
-async findByUserId(userId: string): Promise<IRestaurant | null> {
-  return await restaurantModel
-    .findOne({ userId } as any)
-    .populate("userId");
+async findByUserId(userId: string) {
+  return await restaurantModel.findOne({
+    userId: new mongoose.Types.ObjectId(userId)
+  }).populate("userId");
 }
   async update(
     id: string,

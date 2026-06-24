@@ -18,7 +18,7 @@ export class MenuItemController {
             }
             const data = {
                 ...parseResult.data,
-                ...(req.file?.filename && { imageUrl: "/uploads/menu" + req.file.filename }),
+                ...(req.file?.filename && { imageUrl: "/uploads/" + req.file.filename }),
             };
             const menuItem = await menuItemService.createMenuItem(restaurantId, data);
             return ApiResponseHelper.success(res, menuItem, true, 201, "Menu item created");

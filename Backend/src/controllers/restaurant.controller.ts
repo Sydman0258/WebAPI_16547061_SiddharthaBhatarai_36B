@@ -19,7 +19,7 @@ export class RestaurantController {
         ...parseResult.data,
         userId: req.user?._id,
         ...(req.file?.filename && {
-          restaurantImage: "/uploads/restaurant/" + req.file.filename,
+          restaurantImage: "/uploads/" + req.file.filename,
         }),
       };
       const restaurant = await restaurantService.createRestaurant(restaurantData);
@@ -111,7 +111,7 @@ export class RestaurantController {
       const updateData = {
         ...parseResult.data,
         ...(req.file?.filename && {
-          restaurantImage: "/uploads/restaurant/" + req.file.filename,
+          restaurantImage: "/uploads/" + req.file.filename,
         }),
       };
       const updated = await restaurantService.updateRestaurant(id, updateData);

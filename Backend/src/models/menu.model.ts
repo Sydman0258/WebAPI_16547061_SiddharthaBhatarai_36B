@@ -1,16 +1,9 @@
 import mongoose, { Document, model, Schema } from "mongoose";
+import { MenuItemType } from "../types/menu.types";
 
-export interface IMenuItem extends Document {
+export interface IMenuItem extends  Omit< MenuItemType,'restaurantId'>, Document {
     restaurantId: mongoose.Types.ObjectId;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    imageUrl?: string;
-    isAvailable: boolean;
-    preparationTime: number;
-    createdAt: Date;
-    updatedAt: Date;
+   
 }
 
 const menuItemModelSchema: Schema = new Schema<IMenuItem>({

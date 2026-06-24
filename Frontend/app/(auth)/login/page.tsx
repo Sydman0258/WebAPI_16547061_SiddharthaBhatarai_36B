@@ -45,7 +45,7 @@ const onSubmit = async (data: LoginFormData) => {
                 // ✅ Check if restaurant already exists
                 const restaurant = await getMyRestaurant();
                 if (restaurant?.success && restaurant?.data) {
-                    router.replace('/restaurant/dashboard');
+                    router.replace('/restaurant/');
                 } else {
                     router.replace('/restaurant/onboarding');
                 }
