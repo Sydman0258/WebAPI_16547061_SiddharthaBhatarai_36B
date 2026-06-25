@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getMyRestaurant } from "@/lib/actions/restaurant_actions";
-import { getMenuByRestaurant } from "@/lib/actions/menu_actions"; 
+import { getRestaurantMenu } from "@/lib/actions/menu_actions"; 
 import MenuTable from "./_component/MenuTable";
 
 export default async function MenuPage() {
@@ -16,7 +16,7 @@ export default async function MenuPage() {
         notFound();
     }
 
-    const menuRes = await getMenuByRestaurant(restaurantRes.data._id);
+    const menuRes = await getRestaurantMenu(restaurantRes.data._id);
 
     if (!menuRes.success) {
         throw new Error(
