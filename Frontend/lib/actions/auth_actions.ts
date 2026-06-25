@@ -1,7 +1,7 @@
 "use server";
 
 import { LoginFormData, RegisterFormData } from "@/app/(auth)/_component/login_register_schema";
-import { getUser, login, profileUpdate, register } from "@/lib/api/auth";
+import { getUser, login, profileUpdate, register, requestPasswordReset, resetPassword } from "@/lib/api/auth";
 import {  setCookieToken, storeUserData } from "../cookies";
 import { revalidatePath } from "next/cache";
 
@@ -85,3 +85,56 @@ export async function handleUpdateProfile(data: FormData) {
         return { success: false, message: error.message || 'Profile update failed' };
     }
 } 
+
+
+
+
+export async function handleRequestPasswordReset(
+    email: string
+) {
+    try {
+        const result =
+            await requestPasswordReset(email);
+
+        return {
+            success: result.success,
+            message:
+                result.message ||
+                "Password reset email sent",
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message:
+                error.message ||
+                "Password reset request failed",
+        };
+    }
+}
+
+export async function handleResetPassword(
+    token: string,
+    newPassword: string
+) {
+    try {
+        const result =
+            await resetPassword(
+                token,
+                newPassword
+            );
+
+        return {
+            success: result.success,
+            message:
+                result.message ||
+                "Password reset successful",
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            message:
+                error.message ||
+                "Password reset failed",
+        };
+    }
+}

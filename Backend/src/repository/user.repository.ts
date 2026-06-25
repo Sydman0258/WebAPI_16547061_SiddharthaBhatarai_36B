@@ -12,23 +12,24 @@ export interface IUserRepository {
 }
 
 export class UserMongoRepository implements IUserRepository {
-   async  findById(id: string): Promise<IUser | null> {
-        const foundUser=await User.findById(id);
+    async findById(id: string): Promise<IUser | null> {
+        const foundUser = await User.findById(id);
         return foundUser;
     }
-    findAll(): Promise<IUser[]> {
-        throw new Error("Method not implemented.");
+    async findAll(): Promise<IUser[]> {
+        return await User.find();
     }
-  async update(id: string, user: Partial<IUser>): Promise<IUser | null> {
-    const updatedUser = await User.findByIdAndUpdate(
-        id,
-        { $set: user },
-        { new: true, runValidators: true } 
-    );
-    return updatedUser;
-}
-    delete(id: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async update(id: string, user: Partial<IUser>): Promise<IUser | null> {
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { $set: user },
+            { new: true, runValidators: true }
+        );
+        return updatedUser;
+    }
+    async delete(id: string): Promise<boolean> {
+        const deletedUser = await User.findByIdAndDelete(id);
+        return !!deletedUser;
     }
     async findUsername(username: string): Promise<IUser | null> {
         const foundUser = await User.findOne({ username: username });

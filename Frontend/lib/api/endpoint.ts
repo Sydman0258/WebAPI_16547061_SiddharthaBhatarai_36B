@@ -4,6 +4,8 @@ export const API = {
         LOGIN: "/api/v1/customer/login",
         GET_PROFILE: "/api/v1/customer/getProfile",
         UPDATE: "/api/v1/customer/update",
+          REQUEST_PASSWORD_RESET: '/api/v1/customer/request-password-reset',
+        RESET_PASSWORD: (token: string) => `/api/v1/customer/reset-password/${token}`,
     },
 
     RESTAURANT: {
