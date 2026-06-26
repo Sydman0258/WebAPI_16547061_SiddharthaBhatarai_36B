@@ -11,6 +11,8 @@ import driverRoute from "./routes/drivers.route";
 import menuItemRoute from "./routes/menu.route";
 import orderRoute from "./routes/order.route";
 import reviewRoute from "./routes/review.route";
+import adminUserRoutes from "./routes/admin/user.route";
+
 
 
 
@@ -26,6 +28,8 @@ app.use(express.urlencoded({extended:true}));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use("/api/v1/customer",userRoute);
+app.use("/api/v1/admin/", adminUserRoutes); // admin user related routes
+
 app.use("/api/v1/restaurant",restaurantRoute);
 app.use("/api/v1/driver", driverRoute);
 app.use("/api/v1/menu", menuItemRoute);

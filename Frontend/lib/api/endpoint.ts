@@ -7,6 +7,16 @@ export const API = {
           REQUEST_PASSWORD_RESET: '/api/v1/customer/request-password-reset',
         RESET_PASSWORD: (token: string) => `/api/v1/customer/reset-password/${token}`,
     },
+    ADMIN: {
+        USERS: {
+            GET_ALL: "/api/v1/admin",
+            GET_BY_ID: (id: string) => `/api/v1/admin/${id}`,
+            CREATE: "/api/v1/admin",
+            UPDATE: (id: string) => `/api/v1/admin/${id}`,
+            UPDATE_PASSWORD: (id: string) => `/api/v1/admin/${id}/password`,
+            DELETE: (id: string) => `/api/v1/admin/${id}`,
+        }
+    },
 
     RESTAURANT: {
         GET_ALL: "/api/v1/restaurant",

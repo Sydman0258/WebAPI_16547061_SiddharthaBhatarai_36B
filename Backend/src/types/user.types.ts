@@ -4,7 +4,7 @@ export const UserSchema=z.object({
   username:z.string(),
   fullname:z.string(),
   email:z.email(),
-  role:z.enum(["customer","driver","restaurant"]),
+  role:z.enum(["customer","driver","restaurant","admin"]),
   password:z.string().min(6),
   imageUrl:z.string().optional(),
   address:z.string().optional(),

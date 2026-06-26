@@ -6,6 +6,8 @@ import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
 import { CLIENT_URL, JWT_KEY } from "../config/constant";
 import { sendEmail } from "../utils/email";
+import { IUser } from "../models/user.model";
+
 
 const userRepository = new UserMongoRepository();
 
@@ -93,7 +95,7 @@ export class userService {
         const resetLink = `${CLIENT_URL}/reset-password?token=${token}`;
         const html = `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.</p>`;
         await sendEmail(user.email, "Password Reset", html);
-        return {user,token};
+        return { user, token };
 
     }
 
@@ -114,5 +116,53 @@ export class userService {
         } catch (error) {
             throw new HttpException(400, "Invalid or expired token");
         }
+    }
+    async getAllUserPaginated(page?: string, limit?: string, search?: string) {
+        const currentPage = page && parseInt(page) > 0 ? parseInt(page) : 1;
+        const currentLimit = limit && parseInt(limit) > 0 ? parseInt(limit) : 10;
+        const currentSearch = search && search.trim() !== "" ? search : undefined;
+
+        const { data, total } = await userRepository.getAllPaginated(currentPage, currentLimit, currentSearch);
+        const totalPages = Math.ceil(total / currentLimit);
+        const pagination = {
+            page: currentPage,
+            limit: currentLimit,
+            totalPages: totalPages,
+            total: total,
+        }
+        return { data, pagination };
+    }
+    async checkPassword(userId: string, currentPassword: string): Promise<boolean> {
+        const user = await userRepository.findById(userId);
+        if (!user) {
+            throw new HttpException(404, "User not found");
+        }
+        const isPasswordValid = await bcrypt.compare(
+            currentPassword,
+            user.password
+        );
+        if (!isPasswordValid) {
+            throw new HttpException(400, "Current password is incorrect");
+        }
+        return isPasswordValid;
+    }
+
+    async deleteUser(id: string): Promise<boolean> {
+        const existingUser = await userRepository.findById(id);
+        if (!existingUser) {
+            throw new HttpException(404, "User not found");
+        }
+        const deleted = await userRepository.delete(id);
+        if (!deleted) {
+            throw new HttpException(500, "Failed to delete user");
+        }
+        return deleted;
+    }
+    async getUserById(id: string): Promise<IUser | null> {
+        const user = await userRepository.findById(id);
+        if (!user) {
+            throw new HttpException(404, "User not found");
+        }
+        return user;
     }
 }

@@ -9,6 +9,8 @@ export interface IUserRepository {
     update(id: string, user: Partial<IUser>)
         : Promise<IUser | null>;
     delete(id: string): Promise<boolean>;
+        getAllPaginated(page: number, limit: number, search?: string): Promise<{ data: IUser[]; total: number }>;
+
 }
 
 export class UserMongoRepository implements IUserRepository {
@@ -44,4 +46,18 @@ export class UserMongoRepository implements IUserRepository {
         return createdUser;
     }
 
+    async getAllPaginated(page: number, limit: number, search?: string): Promise<{ data: IUser[]; total: number }> {
+        const query: any = {};
+        if (search) {
+            query.$or = [
+                { username: { $regex: search, $options: "i" } },
+                { email: { $regex: search, $options: "i" } },
+            ];
+        }
+        const total = await User.countDocuments(query);
+        const data = await User.find(query)
+            .skip((page - 1) * limit)
+            .limit(limit);
+        return { data, total };
+    }
 }

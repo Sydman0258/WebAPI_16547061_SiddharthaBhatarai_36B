@@ -40,9 +40,11 @@ const onSubmit = async (data: LoginFormData) => {
             if (role === 'customer') {
                 router.replace('/customer');
             } else if (role === 'driver') {
-                router.replace('/driver');
+                router.replace('/driver');}
+               else if (role === 'admin') {
+                router.replace('/admin');
+            
             } else if (role === 'restaurant') {
-                // ✅ Check if restaurant already exists
                 const restaurant = await getMyRestaurant();
                 if (restaurant?.success && restaurant?.data) {
                     router.replace('/restaurant/');
