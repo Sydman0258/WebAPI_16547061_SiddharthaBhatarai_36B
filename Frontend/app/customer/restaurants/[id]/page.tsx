@@ -1,31 +1,19 @@
 import { notFound } from "next/navigation";
-import { API } from "@/lib/api/endpoint";
+import { getRestaurantById } from "@/lib/actions/restaurant_actions";
+import { getAvailableMenu } from "@/lib/actions/menu_actions";
 import RestaurantHeader from "./_components/RestaurantHeader";
 import MenuList from "./_components/MenuList";
 
-async function getRestaurant(id: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API.RESTAURANT.GET_BY_ID(id)}`, {
-        cache: "no-store",
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.data ?? null;
-}
+export default async function RestaurantDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
 
-async function getMenu(id: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API.MENU.GET_AVAILABLE(id)}`, {
-        cache: "no-store",
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data?.data ?? [];
-}
-
-export default async function RestaurantDetailPage({ params }: { params: { id: string } }) {
-    const [restaurant, menu] = await Promise.all([
-        getRestaurant(params.id),
-        getMenu(params.id),
+    const [restaurantRes, menuRes] = await Promise.all([
+        getRestaurantById(id),
+        getAvailableMenu(id),
     ]);
+
+    const restaurant = restaurantRes?.data;
+    const menu = menuRes?.data ?? [];
 
     if (!restaurant) notFound();
 
@@ -33,7 +21,7 @@ export default async function RestaurantDetailPage({ params }: { params: { id: s
         <div className="min-h-screen bg-white">
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <RestaurantHeader restaurant={restaurant} />
-                <MenuList items={menu} restaurantId={params.id} />
+                <MenuList items={menu} restaurantId={id} />
             </main>
         </div>
     );

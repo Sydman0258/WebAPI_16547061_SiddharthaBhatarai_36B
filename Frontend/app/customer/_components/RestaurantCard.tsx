@@ -1,9 +1,22 @@
 "use client";
 
+import { getRestaurantMenu } from "@/lib/actions/menu_actions";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function RestaurantCard({ restaurant }: { restaurant: any }) {
     const router = useRouter();
+    const [menuItems, setMenuItems] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchMenu = async () => {
+            const result = await getRestaurantMenu(restaurant._id);
+            if (result?.success && result?.data) {
+                setMenuItems(result.data);
+            }
+        };
+        fetchMenu();
+    }, [restaurant._id]);
 
     return (
         <div
@@ -31,6 +44,14 @@ export default function RestaurantCard({ restaurant }: { restaurant: any }) {
                         </span>
                     ))}
                 </div>
+
+                {/* Menu item count from menu_actions */}
+                <div className="mt-2 text-xs text-gray-400">
+                    {menuItems.length > 0
+                        ? `${menuItems.length} item${menuItems.length > 1 ? "s" : ""} on menu`
+                        : "No menu items yet"}
+                </div>
+
                 <div className="flex items-center justify-between mt-3 text-xs text-gray-400">
                     <span>🕒 {restaurant.openingHours}</span>
                     <span className={`font-semibold ${restaurant.status === "open" ? "text-green-500" : "text-red-400"}`}>
