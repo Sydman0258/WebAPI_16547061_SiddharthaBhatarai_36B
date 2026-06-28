@@ -6,7 +6,7 @@ export const handleCreateUser = async (data: any) => {
     try {
         const result = await createUser(data);
         if (result.success) {
-            revalidatePath("/admin/users"); // Revalidate the users page after successful creation
+            revalidatePath("/admin/users"); 
             return { success: true, message: result.message, data: result.data };
         }
         return { success: false, message: result.message || 'User creation failed' };
@@ -56,10 +56,15 @@ export const handleUpdateUser = async (id: string, data: any) => {
 
 export const handleUpdateUserPassword = async (id: string, data: any) => {
     try {
-        const result = await updateUserPassword(id, data);
+        // Grab the new password from the form's payload data object
+        const { newPassword } = data;
+
+        // Use the general updateUser API function to forcefully overwrite the password field
+        const result = await updateUser(id, { password: newPassword });
+        
         if (result.success) {
             revalidatePath("/admin/users");
-            return { success: true, message: result.message, data: result.data };
+            return { success: true, message: result.message || "Password updated successfully!", data: result.data };
         }
         return { success: false, message: result.message || 'Failed to update user password' };
     }

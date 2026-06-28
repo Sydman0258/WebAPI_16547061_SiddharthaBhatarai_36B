@@ -28,7 +28,7 @@ app.use(express.urlencoded({extended:true}));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use("/api/v1/customer",userRoute);
-app.use("/api/v1/admin/", adminUserRoutes); // admin user related routes
+app.use("/api/v1/admin/", adminUserRoutes); 
 
 app.use("/api/v1/restaurant",restaurantRoute);
 app.use("/api/v1/driver", driverRoute);
