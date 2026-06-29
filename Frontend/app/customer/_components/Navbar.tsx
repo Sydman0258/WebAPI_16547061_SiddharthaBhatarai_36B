@@ -4,6 +4,7 @@ import './Navbar.css';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/context/authContext';
+import { useCart } from '@/lib/context/CartContext'; // 1. Import your cart context hook
 
 const NAV_LINKS = [
   { href: '/customer', label: 'Home', icon: '' },
@@ -18,7 +19,13 @@ export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(3); 
+  
+  // 2. Consume global cart state instead of using static local state
+  const { cart } = useCart(); 
+  
+  // 3. Compute total number of items dynamically based on quantity
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,7 +56,6 @@ export default function Navbar() {
 
   return (
     <>
-      
       <nav className={`navbar${scrolled ? ' scrolled' : ''}`} ref={menuRef}>
         <div className="navbar-inner">
           {/* Brand */}
@@ -87,8 +93,6 @@ export default function Navbar() {
 
             <li><div className="nav-divider" /></li>
 
-        
-
             <li>
               <button className="nav-link nav-logout" onClick={logout}>
                 Log out
@@ -123,8 +127,6 @@ export default function Navbar() {
               )}
             </button>
           ))}
-          <div className="mobile-divider" />
-         
           <div className="mobile-divider" />
           <button className="mobile-link mobile-logout" onClick={logout}>
             Log out

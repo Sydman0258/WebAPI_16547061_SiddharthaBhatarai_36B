@@ -26,8 +26,7 @@ export default function MenuList({ items, restaurantId }: { items: any[]; restau
                     <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-100">{category}</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {items.map((item) => (
-                            <MenuItemCard key={item._id} item={item} />
-                        ))}
+<MenuItemCard key={item._id} item={item} restaurantId={restaurantId} />                        ))}
                     </div>
                 </div>
             ))}

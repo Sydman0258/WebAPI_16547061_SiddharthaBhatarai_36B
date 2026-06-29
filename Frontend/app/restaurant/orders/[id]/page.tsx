@@ -1,31 +1,67 @@
-import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
-import { API } from "@/lib/api/endpoint";
-import UpdateStatusButton from "./_component/UpdateStatusButton";
+'use client';
 
-async function getOrder(id: string, token: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API.ORDER.GET_BY_ID(id)}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.data ?? null;
-}
+import { useEffect, useState } from 'react';
+import { useParams, notFound } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import axiosInstance from '@/lib/api/axiosinstance';
+import { API } from '@/lib/api/endpoint';
+import UpdateStatusButton from './_component/UpdateStatusButton';
 
-export default async function RestaurantOrderDetailPage({ params }: { params: { id: string } }) {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value ?? "";
-    const order = await getOrder(params.id, token);
-    if (!order) notFound();
+export default function RestaurantOrderDetailPage() {
+    const { id } = useParams();
+    const router = useRouter();
+    const [order, setOrder] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchOrder() {
+            try {
+                const res = await axiosInstance.get(API.ORDER.GET_BY_ID(id as string));
+                setOrder(res.data?.data ?? null);
+            } catch (err) {
+                console.error('Failed to fetch order:', err);
+            } finally {
+                setLoading(false);
+            }
+        }
+        if (id) fetchOrder();
+    }, [id]);
+
+    // Re-fetch after status update since router.refresh() won't work for client components
+    const refetch = async () => {
+        const res = await axiosInstance.get(API.ORDER.GET_BY_ID(id as string));
+        setOrder(res.data?.data ?? null);
+    };
+
+    if (loading) return (
+        <div className="text-center py-20 text-gray-400">
+            <span className="text-4xl block mb-3 animate-pulse">📦</span>
+            <p className="text-sm">Loading order...</p>
+        </div>
+    );
+
+    if (!order) return (
+        <div className="text-center py-20 text-gray-400">
+            <span className="text-4xl block mb-3">⚠️</span>
+            <p className="text-sm">Order not found.</p>
+            <button onClick={() => router.push('/restaurant/orders')} className="mt-4 text-sm text-red-600 underline">
+                Back to Orders
+            </button>
+        </div>
+    );
 
     return (
         <div className="max-w-2xl space-y-6">
-            <div className="border-b border-gray-100 pb-4">
-                <h1 className="text-2xl font-extrabold text-gray-900">Order Detail</h1>
-                <p className="text-sm text-gray-400 mt-1">
-                    {order.customerId?.fullname} · {new Date(order.placedAt).toLocaleString()}
-                </p>
+            <div className="border-b border-gray-100 pb-4 flex items-center gap-4">
+                <button onClick={() => router.push('/restaurant/orders')} className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
+                    ← Back
+                </button>
+                <div>
+                    <h1 className="text-2xl font-extrabold text-gray-900">Order Detail</h1>
+                    <p className="text-sm text-gray-400 mt-1">
+                        {order.customerId?.fullname} · {new Date(order.placedAt).toLocaleString()}
+                    </p>
+                </div>
             </div>
 
             <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm space-y-4">
@@ -49,7 +85,7 @@ export default async function RestaurantOrderDetailPage({ params }: { params: { 
                 {order.notes && <p><span className="font-semibold text-gray-700">Notes:</span> {order.notes}</p>}
             </div>
 
-            <UpdateStatusButton orderId={order._id} currentStatus={order.status} />
+            <UpdateStatusButton orderId={order._id} currentStatus={order.status} onSuccess={refetch} />
         </div>
     );
 }

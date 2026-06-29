@@ -3,39 +3,75 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../_components/Navbar';
-
-// Initial food items mock state inside a cart
-const initialCartItems = [
-  { id: 'item-1', name: 'Spicy Tuna Crunch Roll', price: 14.99, quantity: 2, customNotes: 'Extra ginger, no wasabi', image: '🍣' },
-  { id: 'item-2', name: 'Tonkotsu Ramen Special', price: 16.50, quantity: 1, customNotes: 'Add soft boiled egg', image: '🍜' },
-  { id: 'item-3', name: 'Pork Gyoza (6pc)', price: 7.25, quantity: 1, customNotes: '', image: '🥟' },
-];
+import { useCart } from "@/lib/context/CartContext"; 
+import { handleCreateOrder } from "@/lib/actions/order_actions"; 
+import { toast } from "react-toastify";
 
 export default function CartPage() {
   const router = useRouter();
-  const [cart, setCart] = useState(initialCartItems);
+  
+  const { cart, updateQuantity, clearCart } = useCart(); 
+  
   const [deliveryNote, setDeliveryNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('Cash on Delivery');
-
-  // Operational state functions
-  const updateQuantity = (id: string, amount: number) => {
-    setCart((prev) =>
-      prev
-        .map((item) => (item.id === id ? { ...item, quantity: item.quantity + amount } : item))
-        .filter((item) => item.quantity > 0)
-    );
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   // Calculations
   const deliveryFee = 2.50;
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const tax = subtotal * 0.13; // 13% standard tax rate
+  const tax = subtotal * 0.13; 
   const grandTotal = subtotal + tax + deliveryFee;
 
-  const handleCheckout = (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Order Placed Successfully! Heading over to track delivery status.');
-    router.push('/customer/dashboard');
+    if (isSubmitting) return;
+  console.log("Cart item[0] keys:", cart[0] ? Object.keys(cart[0]) : "cart is empty");
+  console.log("Cart item[0]:", cart[0]);
+   const restaurantId =
+    (cart[0] as any)?.restaurantId ||
+    (cart[0] as any)?.restaurant?._id ||
+    (cart[0] as any)?.restaurant_id;
+
+  // ✅ Guard: block submission if restaurantId is missing
+  if (!restaurantId) {
+    toast.error("Could not determine restaurant. Please clear your cart and try again.");
+    return;
+  }
+    setIsSubmitting(true);
+
+    // 🛠️ SAFELY MAP CODES TO DYNAMICALLY READ MONGODB HEX STRINGS
+    const orderPayload = {
+      items: cart.map(item => ({
+        menuItemId: item._id || (item as any).id, // Extracts correct 24-character hex ID string
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      })),
+      
+      // Extracts the real restaurantId attached to the first item in the cart
+      restaurantId: cart[0] ? ((cart[0] as any).restaurantId || (cart[0] as any).restaurant?._id) : undefined, 
+
+      deliveryAddress: deliveryNote || "No specific directions provided.", 
+      paymentMethod: paymentMethod,
+      totalAmount: parseFloat(grandTotal.toFixed(2)),
+      status: "Pending" 
+    };
+
+    try {
+      const response = await handleCreateOrder(orderPayload);
+
+      if (response.success) {
+        toast.success(response.message || "Order Placed Successfully!");
+        clearCart(); 
+        router.push('/customer/orders'); 
+      } else {
+        toast.error(response.message);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "An unexpected error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -44,7 +80,6 @@ export default function CartPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Page title */}
         <div className="mb-8 border-b border-gray-100 pb-4">
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
             Your Basket 🛒
@@ -67,22 +102,18 @@ export default function CartPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             
-            {/* Left 2 Columns: Cart list & Options */}
             <div className="lg:col-span-2 space-y-6">
               
-              {/* Item List Container */}
               <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-50 pb-2">Items From Sushi Zen</h2>
+                <h2 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-50 pb-2">Items From Your Order</h2>
                 
                 <div className="divide-y divide-gray-100">
                   {cart.map((item) => (
-                    <div key={item.id} className="py-4 first:pt-0 last:pb-0 flex items-start gap-4">
-                      {/* Avatar item */}
+                    <div key={item._id} className="py-4 first:pt-0 last:pb-0 flex items-start gap-4">
                       <div className="bg-gray-50 w-12 h-12 rounded-xl flex items-center justify-center text-2xl border border-gray-100">
-                        {item.image}
+                        {item.image || '🍔'}
                       </div>
 
-                      {/* Content details */}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-gray-900 text-sm sm:text-base">{item.name}</h3>
                         {item.customNotes && (
@@ -91,24 +122,24 @@ export default function CartPage() {
                         <p className="text-sm text-gray-500 mt-1">${item.price.toFixed(2)} each</p>
                       </div>
 
-                      {/* Quantity Toggles */}
                       <div className="flex items-center gap-3 bg-gray-50 border border-gray-200/60 px-3 py-1.5 rounded-xl">
                         <button 
-                          onClick={() => updateQuantity(item.id, -1)}
+                          onClick={() => updateQuantity(item._id, -1)}
                           className="text-gray-500 hover:text-red-600 font-bold px-1 transition-colors text-sm"
+                          disabled={isSubmitting}
                         >
                           —
                         </button>
                         <span className="text-sm font-bold text-gray-800 w-4 text-center">{item.quantity}</span>
                         <button 
-                          onClick={() => updateQuantity(item.id, 1)}
+                          onClick={() => updateQuantity(item._id, 1)}
                           className="text-gray-500 hover:text-orange-500 font-bold px-1 transition-colors text-sm"
+                          disabled={isSubmitting}
                         >
                           +
                         </button>
                       </div>
 
-                      {/* Line Item Pricing totals */}
                       <div className="text-right pl-2">
                         <span className="font-bold text-gray-900 text-sm sm:text-base">
                           ${(item.price * item.quantity).toFixed(2)}
@@ -119,11 +150,9 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Delivery and Preferences Configurations */}
               <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 space-y-4">
                 <h2 className="text-base font-bold text-gray-900">Preferences</h2>
                 
-                {/* Note Field */}
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                     Delivery Instructions
@@ -132,12 +161,12 @@ export default function CartPage() {
                     rows={2}
                     value={deliveryNote}
                     onChange={(e) => setDeliveryNote(e.target.value)}
+                    disabled={isSubmitting}
                     placeholder="Drop off at gate, ring doorbell twice, leave with security..."
                     className="w-full bg-gray-50/50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
                   />
                 </div>
 
-                {/* Dropdown method select */}
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                     Payment Method
@@ -145,6 +174,7 @@ export default function CartPage() {
                   <select
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value)}
+                    disabled={isSubmitting}
                     className="w-full bg-white border border-gray-200 p-3 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
                   >
                     <option>Cash on Delivery</option>
@@ -156,7 +186,6 @@ export default function CartPage() {
 
             </div>
 
-            {/* Right Column: Order Summary and Submission */}
             <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 lg:sticky lg:top-6">
               <h2 className="text-lg font-bold text-gray-900 mb-4">Summary</h2>
               
@@ -175,23 +204,21 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Total Row summary section */}
               <div className="flex justify-between items-baseline pt-4 mb-6">
                 <span className="text-base font-bold text-gray-900">Total Amount</span>
                 <span className="text-2xl font-black text-red-600">${grandTotal.toFixed(2)}</span>
               </div>
 
-              {/* Promo validation banner indicator */}
               <div className="bg-orange-50/40 border border-dashed border-orange-200 rounded-xl p-3 text-center text-xs font-medium text-orange-800 mb-6">
                 🎉 Awesome! You qualify for a free dessert reward voucher on your next checkout!
               </div>
 
-              {/* Main execution checkout system trigger */}
               <button
                 onClick={handleCheckout}
-                className="w-full py-3.5 bg-red-600 text-white font-bold rounded-xl text-center shadow-md hover:bg-red-700 active:scale-[0.99] transition-all focus:outline-none focus:ring-4 focus:ring-red-200"
+                disabled={isSubmitting}
+                className="w-full py-3.5 bg-red-600 text-white font-bold rounded-xl text-center shadow-md hover:bg-red-700 active:scale-[0.99] transition-all focus:outline-none focus:ring-4 focus:ring-red-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                Place Order (${grandTotal.toFixed(2)})
+                {isSubmitting ? "Processing Order..." : `Place Order ($${grandTotal.toFixed(2)})`}
               </button>
             </div>
 

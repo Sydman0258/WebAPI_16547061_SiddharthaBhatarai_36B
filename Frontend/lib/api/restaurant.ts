@@ -66,3 +66,11 @@ export const deleteRestaurant = async (id: string) => {
         );
     }
 }
+export const getRestaurantOrders = async (restaurantId: string) => {
+    try {
+        const response = await axiosInstance.get(API.ORDER.GET_BY_RESTAURANT(restaurantId));
+        return response.data;
+    } catch (e: any) {
+        throw new Error(e?.response?.data?.message || "Failed to fetch orders");
+    }
+}

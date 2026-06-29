@@ -2,7 +2,8 @@
 
 import AddToCartButton from "./AddToCartButton";
 
-export default function MenuItemCard({ item }: { item: any }) {
+// 1. Update the props to accept restaurantId from MenuList
+export default function MenuItemCard({ item, restaurantId }: { item: any; restaurantId: string }) {
     return (
         <div className="flex gap-4 bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:border-orange-100 transition-all">
             <div className="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden flex items-center justify-center shrink-0">
@@ -22,7 +23,9 @@ export default function MenuItemCard({ item }: { item: any }) {
                 <p className="text-xs text-gray-400 mt-1">⏱ {item.preparationTime} mins</p>
                 <div className="flex items-center justify-between mt-3">
                     <span className="text-base font-black text-red-600">Rs. {item.price}</span>
-                    <AddToCartButton item={item} />
+                    
+                    {/* 2. Forward the restaurantId prop down into the button component */}
+                    <AddToCartButton item={item} restaurantId={restaurantId} />
                 </div>
             </div>
         </div>

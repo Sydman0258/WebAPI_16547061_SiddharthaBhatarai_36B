@@ -1,40 +1,50 @@
-import { cookies } from "next/headers";
-import { API } from "@/lib/api/endpoint";
-import OrderTable from "./_components/OrderTable";
+'use client';
 
-async function getOrders(restaurantId: string, token: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API.ORDER.GET_BY_RESTAURANT(restaurantId)}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data?.data ?? [];
-}
+import { useEffect, useState } from 'react';
+import axiosInstance from '@/lib/api/axiosinstance';
+import { API } from '@/lib/api/endpoint';
+import OrderTable from './_components/OrderTable';
 
-async function getMyRestaurant(token: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API.RESTAURANT.GET_MY}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.data ?? null;
-}
+export default function RestaurantOrdersPage() {
+    const [orders, setOrders] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-export default async function RestaurantOrdersPage() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value ?? "";
-    const restaurant = await getMyRestaurant(token);
-    const orders = restaurant ? await getOrders(restaurant._id, token) : [];
+    useEffect(() => {
+        async function fetchOrders() {
+            try {
+                // First get the restaurant
+                const restaurantRes = await axiosInstance.get(API.RESTAURANT.GET_MY);
+                const restaurant = restaurantRes.data?.data;
+                if (!restaurant) return;
+
+                // Then get its orders
+                const ordersRes = await axiosInstance.get(API.ORDER.GET_BY_RESTAURANT(restaurant._id));
+                setOrders(ordersRes.data?.data ?? []);
+            } catch (err) {
+                console.error('Failed to fetch orders:', err);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchOrders();
+    }, []);
 
     return (
         <div className="space-y-6">
             <div className="border-b border-gray-100 pb-4">
                 <h1 className="text-2xl font-extrabold text-gray-900">Orders</h1>
-                <p className="text-sm text-gray-400 mt-1">{orders.length} total orders</p>
+                <p className="text-sm text-gray-400 mt-1">
+                    {loading ? 'Loading...' : `${orders.length} total orders`}
+                </p>
             </div>
-            <OrderTable orders={orders} />
+            {loading ? (
+                <div className="text-center py-16 text-gray-400">
+                    <span className="text-4xl block mb-3 animate-pulse">📦</span>
+                    <p className="text-sm font-medium">Loading orders...</p>
+                </div>
+            ) : (
+                <OrderTable orders={orders} />
+            )}
         </div>
     );
 }

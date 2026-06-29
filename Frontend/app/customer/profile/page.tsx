@@ -2,6 +2,8 @@ import { getUserData } from "@/lib/actions/auth_actions";
 import { notFound } from "next/navigation";
 import UpdateForm from "./_components/UpdateProfile";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
     const userData = await getUserData();
     if (!userData.success) {

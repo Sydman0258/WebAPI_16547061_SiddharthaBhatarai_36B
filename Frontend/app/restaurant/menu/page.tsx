@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getMyRestaurant } from "@/lib/actions/restaurant_actions";
 import { getRestaurantMenu } from "@/lib/actions/menu_actions"; 
 import MenuTable from "./_component/MenuTable";
-
+export const dynamic = "force-dynamic";
 export default async function MenuPage() {
     const restaurantRes = await getMyRestaurant();
 

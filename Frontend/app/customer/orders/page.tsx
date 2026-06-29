@@ -1,33 +1,41 @@
-import { getUserData } from "@/lib/actions/auth_actions";
-import { cookies } from "next/headers";
-import { API } from "@/lib/api/endpoint";
+// customer/orders/page.tsx
+'use client';  // ← convert to client component
+
+import { useEffect, useState } from 'react';
+import { handleGetMyOrders } from "@/lib/actions/order_actions";
 import OrderCard from "./_components/OrderCard";
 import Navbar from "../_components/Navbar";
 
-async function getMyOrders(token: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${API.ORDER.GET_MY}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data?.data ?? [];
-}
+export default function OrdersPage() {
+    const [orders, setOrders] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-export default async function OrdersPage() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value ?? "";
-    const orders = await getMyOrders(token);
+    useEffect(() => {
+        async function fetchOrders() {
+            const result = await handleGetMyOrders();
+            if (result.success) {
+                setOrders(result.data);
+            }
+            setLoading(false);
+        }
+        fetchOrders();
+    }, []);
 
     return (
         <div className="min-h-screen bg-white">
-            <Navbar/>
+            <Navbar />
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-8 border-b border-gray-100 pb-5">
                     <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">My Orders 📦</h1>
                     <p className="mt-2 text-sm text-gray-500">Track your current and past orders</p>
                 </div>
-                {orders.length === 0 ? (
+
+                {loading ? (
+                    <div className="text-center py-20">
+                        <span className="text-5xl block mb-4 animate-pulse">📦</span>
+                        <p className="text-gray-400 text-sm">Loading your orders...</p>
+                    </div>
+                ) : orders.length === 0 ? (
                     <div className="text-center py-20">
                         <span className="text-5xl block mb-4">📦</span>
                         <h2 className="text-xl font-bold text-gray-800">No orders yet</h2>

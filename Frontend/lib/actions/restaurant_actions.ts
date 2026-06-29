@@ -7,6 +7,7 @@ import {
     getRestaurantById as fetchRestaurantById,
     updateRestaurant as apiUpdateRestaurant,
     deleteRestaurant as apiDeleteRestaurant,
+    getRestaurantOrders,
 } from "@/lib/api/restaurant";
 import { revalidatePath } from "next/cache";
 
@@ -107,5 +108,14 @@ export async function handleDeleteRestaurant(id: string) {
         return { success: false, message: result.message || "Failed to delete restaurant" };
     } catch (error: any) {
         return { success: false, message: error.message || "Failed to delete restaurant" };
+    }
+}
+export async function handleGetRestaurantOrders(restaurantId: string) {
+    try {
+        const result = await getRestaurantOrders(restaurantId);
+        if (result.success) return { success: true, data: result.data };
+        return { success: false, data: [], message: result.message };
+    } catch (error: any) {
+        return { success: false, data: [], message: error.message };
     }
 }

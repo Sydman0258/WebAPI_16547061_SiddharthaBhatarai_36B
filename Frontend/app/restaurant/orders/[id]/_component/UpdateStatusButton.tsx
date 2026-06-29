@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import axiosInstance from "@/lib/api/axiosinstance";
 import { API } from "@/lib/api/endpoint";
@@ -26,13 +25,14 @@ const STATUS_LABELS: Record<string, string> = {
 export default function UpdateStatusButton({
     orderId,
     currentStatus,
+    onSuccess,
 }: {
     orderId: string;
     currentStatus: string;
+    onSuccess?: () => void;
 }) {
-    const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const nextStatuses = TRANSITIONS[currentStatus] ?? [];
+    const nextStatuses = TRANSITIONS[currentStatus?.toLowerCase()] ?? [];
 
     if (nextStatuses.length === 0) return null;
 
@@ -41,7 +41,7 @@ export default function UpdateStatusButton({
         try {
             await axiosInstance.patch(API.ORDER.UPDATE_STATUS(orderId), { status });
             toast.success(`Order marked as ${status}`);
-            router.refresh();
+            onSuccess?.();
         } catch (err: any) {
             toast.error(err?.response?.data?.message || "Failed to update status");
         } finally {

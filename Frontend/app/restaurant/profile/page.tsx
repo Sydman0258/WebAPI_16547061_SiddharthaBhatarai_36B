@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getMyRestaurant } from "@/lib/actions/restaurant_actions";
 import RestaurantProfileForm from "./_components/RestaurantProfileForm";
 
+export const dynamic = "force-dynamic";
 export default async function RestaurantProfilePage() {
     const restaurantRes = await getMyRestaurant();
 

@@ -99,3 +99,10 @@ jest-cache
 # Misc
 # =========================
 *.local
+
+# =========================
+# Docker
+# =========================
+
+docker-compose.yaml
+Dockerfile
