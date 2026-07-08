@@ -16,7 +16,7 @@ const userModelSchema: Schema = new Schema<IUser>({
     password: { type: String, required: true, unique: false },
     address:{type:String,required:false},
   imageUrl:{type:String,required:false},
-  phoneNumber:{type:String,required:true}
+  phoneNumber:{type:String,required:true},
 },
     {
         timestamps: true,

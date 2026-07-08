@@ -9,6 +9,7 @@ const router = Router();
 router.post("/create", authorizedMiddleware, orderController.createOrder);
 router.get("/my", authorizedMiddleware, orderController.getMyOrders);
 router.get("/restaurant/:restaurantId", authorizedMiddleware, orderController.getOrdersByRestaurant);
+router.get("/available", authorizedMiddleware, orderController.getAvailableOrders);
 router.get("/driver/:driverId", authorizedMiddleware, orderController.getOrdersByDriver);
 router.get("/:id", authorizedMiddleware, orderController.getOrderById);
 router.put("/update/:id", authorizedMiddleware, orderController.updateOrder);

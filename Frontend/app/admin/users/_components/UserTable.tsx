@@ -105,7 +105,7 @@ export default function UserTable({ data, pagination, search }: UserTableProps) 
                                 >
                                     <td className="px-5 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-semibold shrink-0">
                                                 {initials}
                                             </div>
                                             <div className="min-w-0">
@@ -201,7 +201,7 @@ export default function UserTable({ data, pagination, search }: UserTableProps) 
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
                     <div className="bg-white rounded-xl shadow-xl max-w-md w-full border border-gray-100 p-6">
                         <div className="flex items-start gap-4">
-                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0 text-red-600">
+                            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0 text-red-600">
                                 <AlertTriangle size={20} />
                             </div>
                             <div>
@@ -224,7 +224,7 @@ export default function UserTable({ data, pagination, search }: UserTableProps) 
                                 type="button"
                                 disabled={isDeleting}
                                 onClick={confirmDelete}
-                                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 min-w-[100px]"
+                                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 min-w-25"
                             >
                                 {isDeleting ? <Loader2 size={14} className="animate-spin" /> : "Delete User"}
                             </button>

@@ -12,6 +12,7 @@ import menuItemRoute from "./routes/menu.route";
 import orderRoute from "./routes/order.route";
 import reviewRoute from "./routes/review.route";
 import adminUserRoutes from "./routes/admin/user.route";
+import paymentRoutes from "./routes/payment.routes";
 
 
 
@@ -35,6 +36,7 @@ app.use("/api/v1/driver", driverRoute);
 app.use("/api/v1/menu", menuItemRoute);
 app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/review", reviewRoute);
+app.use("/api/payments", paymentRoutes);
 
 app.use(
     (req: Request, res: Response) => {

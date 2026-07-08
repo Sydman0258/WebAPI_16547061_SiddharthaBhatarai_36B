@@ -1,52 +1,90 @@
 import { getUserData } from "@/lib/actions/auth_actions";
-import Navbar from "./_components/Navbar";
 import { getAllRestaurants } from "@/lib/actions/restaurant_actions";
+import Navbar from "./_components/Navbar";
 import RestaurantCard from "./_components/RestaurantCard";
 
 export default async function DashboardPage() {
-    const result = await getUserData();
-    const restaurants = (await getAllRestaurants())?.data;
+    const userResult = await getUserData();
+    const restaurantsResult = await getAllRestaurants();
 
-    const user = result?.data;
+    const user = userResult?.data;
+    const restaurants = restaurantsResult?.data || [];
+
     const name = user?.fullname || user?.username || user?.email || "User";
     const address = user?.address || user?.savedAddress || "No address saved";
     const firstName = name.split(" ")[0];
 
     return (
-        <div className="min-h-screen bg-white text-gray-900">
+        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
             <Navbar />
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-                {/* Top Header Section */}
-                <div className="mb-8 border-b border-gray-100 pb-5">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-                        Hungry, {firstName}?
+            <main className="max-w-7xl mx-auto px-6 lg:px-8 pt-10 pb-20">
+                {/* Greeting Header */}
+                <div className="mb-10">
+                    <h1 className="text-4xl lg:text-5xl font-semibold tracking-tighter text-zinc-900 dark:text-white">
+                        Good afternoon, {firstName} 👋
                     </h1>
-                    <p className="mt-2 text-sm text-gray-500">
-                        Delivering to: <span className="font-semibold text-gray-700">{address}</span>
+                    <p className="mt-3 text-zinc-500 dark:text-zinc-400 text-lg">
+                        Delivering to{" "}
+                        <span className="font-medium text-zinc-700 dark:text-zinc-300 underline decoration-dotted cursor-pointer hover:text-orange-600">
+                            {address}
+                        </span>
                     </p>
                 </div>
 
-                {/* Restaurant Grid */}
-                <section>
-                    <h2 className="text-lg font-bold text-gray-800 mb-4">Restaurants near you</h2>
 
+                {/* Main Restaurant Sections */}
+                <div className="space-y-16 mt-12">
                     {restaurants && restaurants.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {restaurants.map((restaurant: any) => (
-                                <RestaurantCard key={restaurant._id} restaurant={restaurant} />
-                            ))}
-                        </div>
+                        <>
+                            {/* Recommended */}
+                            <Section title="Recommended for you">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {restaurants.slice(0, 8).map((restaurant: any) => (
+                                        <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+                                    ))}
+                                </div>
+                            </Section>
+
+                            {/* Popular Near You */}
+                            <Section title="Popular near you">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {restaurants.slice(4, 12).map((restaurant: any) => (
+                                        <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+                                    ))}
+                                </div>
+                            </Section>
+
+                            {/* All Restaurants */}
+                            <Section title="Restaurants near you">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {restaurants.map((restaurant: any) => (
+                                        <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+                                    ))}
+                                </div>
+                            </Section>
+                        </>
                     ) : (
-                        <div className="text-center py-16 text-gray-400">
-                            <span className="text-5xl">🍽️</span>
-                            <p className="mt-4 text-sm">No restaurants available right now.</p>
+                        <div className="text-center py-20">
+                            <span className="text-6xl mb-6 block">🍽️</span>
+                            <p className="text-xl text-zinc-400">No restaurants available right now</p>
+                            <p className="text-zinc-500 mt-2">Please check back later</p>
                         </div>
                     )}
-                </section>
-
+                </div>
             </main>
         </div>
+    );
+}
+
+// Reusable Section Component
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+    return (
+        <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-6 text-zinc-900 dark:text-white">
+                {title}
+            </h2>
+            {children}
+        </section>
     );
 }

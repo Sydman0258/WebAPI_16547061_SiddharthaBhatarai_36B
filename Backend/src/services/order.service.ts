@@ -51,6 +51,7 @@ export class OrderService {
             total: subtotal + DELIVERY_FEE,
             status: "pending",
             placedAt: new Date(),
+            
         });
     }
 
@@ -111,4 +112,7 @@ export class OrderService {
         }
         return await orderRepository.updateStatus(id, "cancelled");
     }
+async getAvailableOrders() {
+    return await orderRepository.findAvailable();
+}
 }

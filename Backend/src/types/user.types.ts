@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z} from 'zod';
 
 export const UserSchema=z.object({
   username:z.string(),
@@ -8,7 +8,9 @@ export const UserSchema=z.object({
   password:z.string().min(6),
   imageUrl:z.string().optional(),
   address:z.string().optional(),
-  phoneNumber:z.string()
+  phoneNumber:z.string(),
+
+
 });
 
 export type UserType=z.infer<typeof UserSchema>;

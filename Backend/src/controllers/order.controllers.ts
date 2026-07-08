@@ -118,4 +118,12 @@ export class OrderController {
             return ApiResponseHelper.error(res, err?.message || "Failed to cancel order", err?.status || 500);
         }
     }
+async getAvailableOrders(req: Request, res: Response) {
+    try {
+        const orders = await orderService.getAvailableOrders();
+        return ApiResponseHelper.success(res, orders, true, 200, "Available orders retrieved");
+    } catch (err: any) {
+        return ApiResponseHelper.error(res, err?.message || "Failed to get available orders", err?.status || 500);
+    }
+}
 }

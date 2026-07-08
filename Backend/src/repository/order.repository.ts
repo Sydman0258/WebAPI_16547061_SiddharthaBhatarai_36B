@@ -13,9 +13,17 @@ export interface IOrderRepository {
     assignDriver(id: string, driverId: string): Promise<IOrder | null>;
     update(id: string, data: Partial<IOrder>): Promise<IOrder | null>;
     delete(id: string): Promise<boolean>;
+    findAvailable(): Promise<IOrder[]>;
+
 }
 
 export class OrderMongoRepository implements IOrderRepository {
+ async findAvailable(): Promise<IOrder[]> {
+    return await Order.find({ status: "ready", driverId: { $exists: false } } as any)
+        .populate("customerId")
+        .populate("restaurantId")
+        .sort({ placedAt: 1 });
+}
     async create(data: Partial<IOrder>): Promise<IOrder> {
         return await Order.create(data);
     }
