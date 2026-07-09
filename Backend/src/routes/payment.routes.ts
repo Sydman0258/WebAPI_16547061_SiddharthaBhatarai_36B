@@ -51,12 +51,6 @@ router.delete(
     authorizedMiddleware,
     paymentController.deletePayment.bind(paymentController)
 );
-// Existing
-router.post(
-    "/esewa",
-    authorizedMiddleware,
-    paymentController.addEsewaAccount.bind(paymentController)
-);
 
 
 export default router;

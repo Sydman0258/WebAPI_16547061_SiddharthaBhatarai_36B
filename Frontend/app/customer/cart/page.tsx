@@ -1,60 +1,96 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Navbar from '../_components/Navbar';
-import { useCart } from "@/lib/context/CartContext"; 
-import { handleCreateOrder } from "@/lib/actions/order_actions"; 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Navbar from "../_components/Navbar";
+import { useCart } from "@/lib/context/CartContext";
+import { handleCreateOrder } from "@/lib/actions/order_actions";
+import { getPayments } from "@/lib/actions/payment_actions";
 import { toast } from "react-toastify";
 
 export default function CartPage() {
   const router = useRouter();
-  
-  const { cart, updateQuantity, clearCart } = useCart(); 
-  
-  const [deliveryNote, setDeliveryNote] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('Cash on Delivery');
-  const [isSubmitting, setIsSubmitting] = useState(false); 
 
-  // Calculations
+  const { cart, updateQuantity, clearCart } = useCart();
+
+  const [deliveryNote, setDeliveryNote] = useState('');
+  const [payments, setPayments] = useState<any[]>([]);
+  const [selectedPayment, setSelectedPayment] = useState<string>("cash");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {
+    async function loadPayments() {
+      try {
+        const response = await getPayments();
+
+        if (response.success) {
+          setPayments(response.data || []);
+
+          const defaultPayment = response.data.find(
+            (payment: any) => payment.isDefault
+          );
+
+          if (defaultPayment) {
+            setSelectedPayment(defaultPayment._id);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    loadPayments();
+  }, []);
   const deliveryFee = 2.50;
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const tax = subtotal * 0.13; 
+  const tax = subtotal * 0.13;
   const grandTotal = subtotal + tax + deliveryFee;
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
-  console.log("Cart item[0] keys:", cart[0] ? Object.keys(cart[0]) : "cart is empty");
-  console.log("Cart item[0]:", cart[0]);
-   const restaurantId =
-    (cart[0] as any)?.restaurantId ||
-    (cart[0] as any)?.restaurant?._id ||
-    (cart[0] as any)?.restaurant_id;
 
-  // ✅ Guard: block submission if restaurantId is missing
-  if (!restaurantId) {
-    toast.error("Could not determine restaurant. Please clear your cart and try again.");
-    return;
-  }
+    const restaurantId = cart[0]
+      ? (cart[0] as any).restaurantId || (cart[0] as any).restaurant?._id || (cart[0] as any).restaurant_id
+      : undefined;
+
+    const restaurantIds = new Set(
+      cart
+        .map((item) => (item as any).restaurantId || (item as any).restaurant?._id || (item as any).restaurant_id)
+        .filter(Boolean)
+    );
+
+    if (!restaurantId) {
+      toast.error("Could not determine restaurant. Please clear your cart and try again.");
+      return;
+    }
+
+    if (restaurantIds.size > 1) {
+      toast.error("Your cart contains items from multiple restaurants. Please place separate orders.");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // 🛠️ SAFELY MAP CODES TO DYNAMICALLY READ MONGODB HEX STRINGS
-    const orderPayload = {
-      items: cart.map(item => ({
-        menuItemId: item._id || (item as any).id, // Extracts correct 24-character hex ID string
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity
-      })),
-      
-      // Extracts the real restaurantId attached to the first item in the cart
-      restaurantId: cart[0] ? ((cart[0] as any).restaurantId || (cart[0] as any).restaurant?._id) : undefined, 
+    const payment = payments.find((payment) => payment._id === selectedPayment);
 
-      deliveryAddress: deliveryNote || "No specific directions provided.", 
-      paymentMethod: paymentMethod,
-      totalAmount: parseFloat(grandTotal.toFixed(2)),
-      status: "Pending" 
+    if (selectedPayment !== "cash" && !payment) {
+      toast.error("Please select a valid payment method before placing the order.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const orderPayload = {
+      restaurantId,
+      items: cart.map((item) => ({
+        menuItemId: item._id || (item as any).id || (item as any).menuItemId,
+        quantity: item.quantity,
+      })),
+      deliveryAddress: deliveryNote.trim() || "No specific directions provided.",
+      notes: deliveryNote.trim() ? deliveryNote : undefined,
+      paymentMethod:
+        selectedPayment === "cash"
+          ? "cash"
+          : payment?.paymentType || "cash",
     };
 
     try {
@@ -62,8 +98,8 @@ export default function CartPage() {
 
       if (response.success) {
         toast.success(response.message || "Order Placed Successfully!");
-        clearCart(); 
-        router.push('/customer/orders'); 
+        clearCart();
+        router.push('/customer/orders');
       } else {
         toast.error(response.message);
       }
@@ -79,7 +115,7 @@ export default function CartPage() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         <div className="mb-8 border-b border-gray-100 pb-4">
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
             Your Basket 🛒
@@ -92,7 +128,7 @@ export default function CartPage() {
             <span className="text-5xl block mb-4">🛒</span>
             <h2 className="text-xl font-bold text-gray-800">Your cart is currently empty</h2>
             <p className="text-sm text-gray-400 mt-2 mb-6">Looks like you haven't added any dishes yet.</p>
-            <button 
+            <button
               onClick={() => router.push('/customer/restaurants')}
               className="px-6 py-2.5 bg-red-600 text-white font-semibold text-sm rounded-xl hover:bg-red-700 transition-colors shadow-sm"
             >
@@ -101,12 +137,12 @@ export default function CartPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            
+
             <div className="lg:col-span-2 space-y-6">
-              
+
               <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 border-b border-gray-50 pb-2">Items From Your Order</h2>
-                
+
                 <div className="divide-y divide-gray-100">
                   {cart.map((item) => (
                     <div key={item._id} className="py-4 first:pt-0 last:pb-0 flex items-start gap-4">
@@ -123,7 +159,7 @@ export default function CartPage() {
                       </div>
 
                       <div className="flex items-center gap-3 bg-gray-50 border border-gray-200/60 px-3 py-1.5 rounded-xl">
-                        <button 
+                        <button
                           onClick={() => updateQuantity(item._id, -1)}
                           className="text-gray-500 hover:text-red-600 font-bold px-1 transition-colors text-sm"
                           disabled={isSubmitting}
@@ -131,7 +167,7 @@ export default function CartPage() {
                           —
                         </button>
                         <span className="text-sm font-bold text-gray-800 w-4 text-center">{item.quantity}</span>
-                        <button 
+                        <button
                           onClick={() => updateQuantity(item._id, 1)}
                           className="text-gray-500 hover:text-orange-500 font-bold px-1 transition-colors text-sm"
                           disabled={isSubmitting}
@@ -152,7 +188,7 @@ export default function CartPage() {
 
               <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 space-y-4">
                 <h2 className="text-base font-bold text-gray-900">Preferences</h2>
-                
+
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                     Delivery Instructions
@@ -168,19 +204,122 @@ export default function CartPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
                     Payment Method
                   </label>
-                  <select
-                    value={paymentMethod}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    disabled={isSubmitting}
-                    className="w-full bg-white border border-gray-200 p-3 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer"
-                  >
-                    <option>Cash on Delivery</option>
-                    <option>Digital Wallet (eSewa / Khalti)</option>
-                    <option>Credit / Debit Card</option>
-                  </select>
+
+                  <div className="space-y-3">
+
+                    <label className="flex items-center justify-between p-4 border rounded-xl cursor-pointer hover:border-orange-500 transition">
+                      <div>
+                        <h4 className="font-semibold text-gray-900">
+                          💵 Cash on Delivery
+                        </h4>
+
+                        <p className="text-sm text-gray-500">
+                          Pay when your food arrives.
+                        </p>
+                      </div>
+
+                      <input
+                        type="radio"
+                        checked={selectedPayment === "cash"}
+                        onChange={() => setSelectedPayment("cash")}
+                        disabled={isSubmitting}
+                        className="h-4 w-4 accent-red-600"
+                      />
+                    </label>
+
+                    {payments.map((payment: any) => (
+                      <label
+                        key={payment._id}
+                        className={`flex items-center justify-between p-4 border rounded-xl cursor-pointer transition
+          ${selectedPayment === payment._id
+                            ? "border-red-500 bg-red-50"
+                            : "border-gray-200 hover:border-red-300"
+                          }`}
+                      >
+                        <div>
+
+                          {payment.paymentType === "card" ? (
+                            <>
+                              <div className="flex items-center gap-2">
+
+                                <span className="text-xl">
+                                  💳
+                                </span>
+
+                                <h4 className="font-semibold">
+                                  {payment.card.cardBrand}
+                                </h4>
+
+                                {payment.isDefault && (
+                                  <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-600 text-xs">
+                                    Default
+                                  </span>
+                                )}
+
+                              </div>
+
+                              <p className="text-sm text-gray-500 mt-1">
+                                •••• •••• •••• {payment.card.lastFourDigits}
+                              </p>
+
+                              <p className="text-xs text-gray-400">
+                                {payment.card.cardHolderName}
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <div className="flex items-center gap-2">
+
+                                <span className="text-xl">
+                                  🟢
+                                </span>
+
+                                <h4 className="font-semibold">
+                                  eSewa
+                                </h4>
+
+                                {payment.isDefault && (
+                                  <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-600 text-xs">
+                                    Default
+                                  </span>
+                                )}
+
+                              </div>
+
+                              <p className="text-sm text-gray-500 mt-1">
+                                {payment.esewa.mobileNumber}
+                              </p>
+
+                              <p className="text-xs text-gray-400">
+                                {payment.esewa.accountName}
+                              </p>
+                            </>
+                          )}
+
+                        </div>
+
+                        <input
+                          type="radio"
+                          checked={selectedPayment === payment._id}
+                          onChange={() => setSelectedPayment(payment._id)}
+                          disabled={isSubmitting}
+                          className="h-4 w-4 accent-red-600"
+                        />
+                      </label>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={() => router.push("/customer/profile")}
+                      className="w-full border border-dashed border-red-300 rounded-xl py-3 text-red-600 font-medium hover:bg-red-50 transition"
+                    >
+                      + Manage Payment Methods
+                    </button>
+
+                  </div>
                 </div>
               </div>
 
@@ -188,7 +327,7 @@ export default function CartPage() {
 
             <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 lg:sticky lg:top-6">
               <h2 className="text-lg font-bold text-gray-900 mb-4">Summary</h2>
-              
+
               <div className="space-y-3 text-sm text-gray-600 border-b border-gray-100 pb-4">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
@@ -224,7 +363,6 @@ export default function CartPage() {
 
           </div>
         )}
-
       </main>
     </div>
   );

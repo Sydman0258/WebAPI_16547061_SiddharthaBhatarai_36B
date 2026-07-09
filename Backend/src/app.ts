@@ -36,7 +36,7 @@ app.use("/api/v1/driver", driverRoute);
 app.use("/api/v1/menu", menuItemRoute);
 app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/review", reviewRoute);
-app.use("/api/payments", paymentRoutes);
+app.use("/api/v1/payments", paymentRoutes);
 
 app.use(
     (req: Request, res: Response) => {

@@ -3,12 +3,13 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface CartItem {
-  _id: string;          // Keeping your MongoDB style matching fix
+  _id: string;
   name: string;
   price: number;
   quantity: number;
-  image?: string;       
-  customNotes?: string; 
+  image?: string;
+  customNotes?: string;
+  restaurantId?: string;
 }
 
 interface CartContextType {
@@ -26,8 +27,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clearCart = () => setCart([]);
 
   const addToCart = (item: any) => {
-    // Standardize the incoming id structure to match your model
-    const itemId = item._id || item.id; 
+    const itemId = item._id || item.id || item.menuItemId;
+    const itemRestaurantId = item.restaurantId || item.restaurant?._id;
 
     setCart((prevCart) => {
       const existingItem = prevCart.find((i) => i._id === itemId);
@@ -41,14 +42,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       // 2. Map properties cleanly so it explicitly builds an _id parameter
       return [
         ...prevCart, 
-        { 
-          _id: itemId, 
-          name: item.name, 
-          price: item.price, 
-          image: item.image, 
-          customNotes: item.customNotes, 
-          restaurantId: item.restaurantId,
-          quantity: 1 
+        {
+          _id: itemId,
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          customNotes: item.customNotes,
+          restaurantId: itemRestaurantId,
+          quantity: 1
         }
       ];
     });

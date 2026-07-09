@@ -4,7 +4,7 @@ export const API = {
         LOGIN: "/api/v1/customer/login",
         GET_PROFILE: "/api/v1/customer/getProfile",
         UPDATE: "/api/v1/customer/update",
-          REQUEST_PASSWORD_RESET: '/api/v1/customer/request-password-reset',
+        REQUEST_PASSWORD_RESET: '/api/v1/customer/request-password-reset',
         RESET_PASSWORD: (token: string) => `/api/v1/customer/reset-password/${token}`,
     },
     ADMIN: {
@@ -27,16 +27,6 @@ export const API = {
         DELETE: (id: string) => `/api/v1/restaurant/delete/${id}`,
     },
 
-    DRIVER: {
-        GET_ALL: "/api/v1/driver",
-        GET_AVAILABLE: "/api/v1/driver/available",
-        GET_BY_ID: (id: string) => `/api/v1/driver/${id}`,
-        CREATE: "/api/v1/driver/create",
-        GET_MY: "/api/v1/driver/my/profile",
-        UPDATE: (id: string) => `/api/v1/driver/update/${id}`,
-        TOGGLE_AVAILABILITY: "/api/v1/driver/toggle-availability",
-        DELETE: (id: string) => `/api/v1/driver/delete/${id}`,
-    },
 
     MENU: {
         GET_BY_RESTAURANT: (restaurantId: string) => `/api/v1/menu/restaurant/${restaurantId}`,
@@ -69,5 +59,19 @@ export const API = {
         GET_BY_DRIVER: (driverId: string) => `/api/v1/review/driver/${driverId}`,
         UPDATE: (id: string) => `/api/v1/review/update/${id}`,
         DELETE: (id: string) => `/api/v1/review/delete/${id}`,
+    },
+
+    PAYMENT: {
+        ADD_CARD: "/api/v1/payment/card",
+        ADD_ESEWA: "/api/v1/payment/esewa",
+
+        GET_ALL: "/api/v1/payment",
+        GET_BY_ID: (id: string) => `/api/v1/payment/${id}`,
+
+        UPDATE: (id: string) => `/api/v1/payment/${id}`,
+
+        SET_DEFAULT: (id: string) => `/api/v1/payment/${id}/default`,
+
+        DELETE: (id: string) => `/api/v1/payment/${id}`,
     },
 } as const;

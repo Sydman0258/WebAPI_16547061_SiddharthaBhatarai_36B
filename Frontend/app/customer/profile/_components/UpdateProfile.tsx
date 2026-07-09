@@ -13,8 +13,7 @@ import Navbar from "../../_components/Navbar";
 import { handleUpdateProfile } from "@/lib/actions/auth_actions";
 import { useAuth } from "@/lib/context/authContext";
 import { UpdateFormType, UserUpdateSchema } from "../_components/UserUpdateSchema";
-
-
+import PaymentMethods from "./PaymentMethods";
 
 
 export default function UpdateUserForm({ user }: { user: any }) {
@@ -100,7 +99,6 @@ export default function UpdateUserForm({ user }: { user: any }) {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8 my-6">
-                    {/* Form Header */}
                     <div className="mb-8 border-b border-gray-100 pb-5">
                         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Account Settings</h1>
                         <p className="mt-1 text-sm text-gray-500">
@@ -115,7 +113,6 @@ export default function UpdateUserForm({ user }: { user: any }) {
                             </div>
                         )}
 
-                        {/* Profile Image Section */}
                         <div className="flex flex-col sm:flex-row items-center gap-5 bg-orange-50/20 border border-dashed border-orange-100 rounded-2xl p-5 mb-2">
                             <div className="relative group w-24 h-24 shrink-0">
                                 {previewImage ? (
@@ -189,9 +186,7 @@ export default function UpdateUserForm({ user }: { user: any }) {
                             </p>
                         )}
 
-                        {/* Grid Inputs Area */}
                         <div className="grid grid-cols-1 gap-5">
-                            {/* Full Name Input */}
                             <div className="space-y-1.5">
                                 <label
                                     className="text-xs font-bold uppercase tracking-wider text-gray-500"
@@ -214,7 +209,6 @@ export default function UpdateUserForm({ user }: { user: any }) {
                                 )}
                             </div>
 
-                            {/* Password Field */}
                             <div className="space-y-1.5">
                                 <label
                                     className="text-xs font-bold uppercase tracking-wider text-gray-500"
@@ -237,7 +231,6 @@ export default function UpdateUserForm({ user }: { user: any }) {
                                 )}
                             </div>
 
-                            {/* Address Field */}
                             <div className="space-y-1.5">
                                 <label
                                     className="text-xs font-bold uppercase tracking-wider text-gray-500"
@@ -260,9 +253,9 @@ export default function UpdateUserForm({ user }: { user: any }) {
                                 )}
                             </div>
                         </div>
-
-                        {/* Submit Action Button */}
+<PaymentMethods />
                         <div className="pt-4 border-t border-gray-50 flex justify-end">
+                            
                             <button
                                 type="submit"
                                 disabled={isSubmitting}

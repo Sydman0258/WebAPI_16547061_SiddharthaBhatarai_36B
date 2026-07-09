@@ -40,19 +40,25 @@ export class OrderService {
 
         const subtotal = resolvedItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
-        return await orderRepository.create({
-            customerId: new mongoose.Types.ObjectId(customerId),
-            restaurantId: new mongoose.Types.ObjectId(data.restaurantId),
-            items: resolvedItems as any,
-            deliveryAddress: data.deliveryAddress,
-            notes: data.notes,
-            subtotal,
-            deliveryFee: DELIVERY_FEE,
-            total: subtotal + DELIVERY_FEE,
-            status: "pending",
-            placedAt: new Date(),
-            
-        });
+      return await orderRepository.create({
+    customerId: new mongoose.Types.ObjectId(customerId),
+    restaurantId: new mongoose.Types.ObjectId(data.restaurantId),
+    items: resolvedItems as any,
+
+    deliveryAddress: data.deliveryAddress,
+    notes: data.notes,
+
+    subtotal,
+    deliveryFee: DELIVERY_FEE,
+    total: subtotal + DELIVERY_FEE,
+
+    status: "pending",
+
+    paymentMethod: data.paymentMethod,
+    paymentStatus: "pending",
+
+    placedAt: new Date(),
+});
     }
 
     async getOrderById(id: string) {

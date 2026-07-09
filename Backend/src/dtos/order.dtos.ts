@@ -7,11 +7,16 @@ const orderItemDTO = z.object({
 
 export const createOrderDTO = z.object({
     restaurantId: z.string().min(1),
-    items: z.array(orderItemDTO).min(1, "Order must have at least one item"),
+    items: z.array(orderItemDTO).min(1),
     deliveryAddress: z.string().min(1),
     notes: z.string().optional(),
-});
 
+    paymentMethod: z.enum([
+        "cash",
+        "card",
+        "esewa",
+    ]),
+});
 export type createOrderDTO = z.infer<typeof createOrderDTO>;
 
 // only fields a customer can change before confirmed
