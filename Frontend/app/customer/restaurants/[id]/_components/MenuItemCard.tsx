@@ -2,7 +2,6 @@
 
 import AddToCartButton from "./AddToCartButton";
 
-// 1. Update the props to accept restaurantId from MenuList
 export default function MenuItemCard({ item, restaurantId }: { item: any; restaurantId: string }) {
     return (
         <div className="flex gap-4 bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:border-orange-100 transition-all">

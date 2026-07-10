@@ -30,7 +30,7 @@ export default function RestaurantProfileForm({
             description: restaurant?.description || "",
             location: restaurant?.location || "",
             openingHours: restaurant?.openingHours || "",
-            status: restaurant?.status || "",
+            status: restaurant?.status ?? true,
         },
     });
 
@@ -76,9 +76,8 @@ export default function RestaurantProfileForm({
             if (data.openingHours)
                 formData.append("openingHours", data.openingHours);
 
-            if (data.status) formData.append("status", data.status);
+            if (data.status) formData.append("status", String(data.status));
 
-            // IMPORTANT: must match backend multer field name
             if (data.restaurantImage) {
                 formData.append("restaurantImage", data.restaurantImage);
             }
@@ -177,22 +176,22 @@ export default function RestaurantProfileForm({
                     {errors.restaurantImage.message as string}
                 </p>
             )}
-
             {/* TEXT FIELDS */}
             {[
                 { name: "restaurantName", label: "Restaurant Name" },
                 { name: "location", label: "Location" },
                 { name: "openingHours", label: "Opening Hours" },
-                { name: "status", label: "Status" },
             ].map((field) => (
                 <div key={field.name} className="space-y-1.5">
                     <label className="text-xs font-bold text-gray-500 uppercase">
                         {field.label}
                     </label>
+
                     <input
                         {...register(field.name as any)}
                         className="w-full px-3 py-2 border rounded-xl text-sm text-black bg-gray-50"
                     />
+
                     {errors[field.name as keyof RestaurantProfileFormType] && (
                         <p className="text-xs text-red-500">
                             {
@@ -205,7 +204,55 @@ export default function RestaurantProfileForm({
                 </div>
             ))}
 
-            {/* DESCRIPTION */}
+<div className="space-y-2">
+    <label className="text-xs font-bold text-gray-500 uppercase">
+        Restaurant Status
+    </label>
+
+    <Controller
+        name="status"
+        control={control}
+        render={({ field }) => (
+            <div className="flex rounded-xl overflow-hidden border border-gray-300">
+                <button
+                    type="button"
+                    onClick={() => field.onChange(true)}
+                    className={`flex-1 py-3 transition-all ${
+                        field.value
+                            ? "bg-green-500 text-white"
+                            : "bg-white text-gray-600 hover:bg-gray-100"
+                    }`}
+                >
+                     Open
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => field.onChange(false)}
+                    className={`flex-1 py-3 transition-all ${
+                        !field.value
+                            ? "bg-red-500 text-white"
+                            : "bg-white text-gray-600 hover:bg-gray-100"
+                    }`}
+                >
+                    Closed
+                </button>
+            </div>
+        )}
+    />
+</div>
+
+            <div className="space-y-1.5">
+                <label className="text-xs font-bold text-black uppercase">
+                    Description
+                </label>
+
+                <textarea
+                    rows={3}
+                    {...register("description")}
+                    className="w-full px-3 py-2 border rounded-xl text-sm text-black bg-gray-50"
+                />
+            </div>
             <div className="space-y-1.5">
                 <label className="text-xs font-bold text-black uppercase">
                     Description

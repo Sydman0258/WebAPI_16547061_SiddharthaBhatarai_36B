@@ -155,7 +155,7 @@ export default function CartPage() {
                         {item.customNotes && (
                           <p className="text-xs text-orange-600 mt-0.5 italic font-medium">✏️ {item.customNotes}</p>
                         )}
-                        <p className="text-sm text-gray-500 mt-1">${item.price.toFixed(2)} each</p>
+                        <p className="text-sm text-gray-500 mt-1">Rs. {item.price.toFixed(2)} each</p>
                       </div>
 
                       <div className="flex items-center gap-3 bg-gray-50 border border-gray-200/60 px-3 py-1.5 rounded-xl">
@@ -178,7 +178,7 @@ export default function CartPage() {
 
                       <div className="text-right pl-2">
                         <span className="font-bold text-gray-900 text-sm sm:text-base">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          Rs. {(item.price * item.quantity).toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -331,21 +331,21 @@ export default function CartPage() {
               <div className="space-y-3 text-sm text-gray-600 border-b border-gray-100 pb-4">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium text-gray-900">Rs. {subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Delivery Fee</span>
-                  <span className="font-medium text-gray-900">${deliveryFee.toFixed(2)}</span>
+                  <span className="font-medium text-gray-900">Rs. {deliveryFee.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>VAT / Service Tax (13%)</span>
-                  <span className="font-medium text-gray-900">${tax.toFixed(2)}</span>
+                  <span className="font-medium text-gray-900">Rs. {tax.toFixed(2)}</span>
                 </div>
               </div>
 
               <div className="flex justify-between items-baseline pt-4 mb-6">
                 <span className="text-base font-bold text-gray-900">Total Amount</span>
-                <span className="text-2xl font-black text-red-600">${grandTotal.toFixed(2)}</span>
+                <span className="text-2xl font-black text-red-600">Rs. {grandTotal.toFixed(2)}</span>
               </div>
 
               <div className="bg-orange-50/40 border border-dashed border-orange-200 rounded-xl p-3 text-center text-xs font-medium text-orange-800 mb-6">
@@ -357,7 +357,7 @@ export default function CartPage() {
                 disabled={isSubmitting}
                 className="w-full py-3.5 bg-red-600 text-white font-bold rounded-xl text-center shadow-md hover:bg-red-700 active:scale-[0.99] transition-all focus:outline-none focus:ring-4 focus:ring-red-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Processing Order..." : `Place Order ($${grandTotal.toFixed(2)})`}
+                {isSubmitting ? "Processing Order..." : `Place Order (Rs. ${grandTotal.toFixed(2)})`}
               </button>
             </div>
 

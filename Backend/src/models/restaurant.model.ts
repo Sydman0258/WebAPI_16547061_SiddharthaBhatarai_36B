@@ -1,5 +1,6 @@
 import mongoose, { Document ,model,Schema} from "mongoose";
 import { RestaurantType } from "../types/restaurant.types";
+import { boolean } from "zod";
 
 export interface  IRestaurant extends Omit< RestaurantType,'userId'>,Document{
 
@@ -12,7 +13,7 @@ userId:{type:Schema.Types.ObjectId,required:true,ref:"User"},
 restaurantName:{type:String,required:true},
 description:{type:String,required:true},
 location:{type:String,required:true},
-status:{type:String,required:true},
+status:{type:Boolean,required:true},
 openingHours:{type:String,required:true},
 restaurantImage:{type:String,required:false},
 foodTypes:{type:[String],required:true},

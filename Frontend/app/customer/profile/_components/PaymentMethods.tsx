@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import PaymentMethodCard from "./PaymentMethodCard";
 import AddCardModal from "./AddCardModal";
 import AddEsewaModal from "./AddEsewaModal";
+import DeleteModal from "../../../_component/DeleteModel";
 
 import {
   getPayments,
@@ -20,6 +21,9 @@ export default function PaymentMethods() {
 
   const [showCardModal, setShowCardModal] = useState(false);
   const [showEsewaModal, setShowEsewaModal] = useState(false);
+
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+
   const loadInFlightRef = useRef(false);
 
   const loadPayments = async () => {
@@ -51,10 +55,14 @@ export default function PaymentMethods() {
     loadPayments();
   }, []);
 
-  const deletePayment = async (id: string) => {
-    if (!confirm("Delete this payment method?")) return;
+  const requestDeletePayment = (id: string) => {
+    setDeleteTargetId(id);
+  };
 
-    const response = await handleDeletePayment(id);
+  const confirmDeletePayment = async () => {
+    if (!deleteTargetId) return;
+
+    const response = await handleDeletePayment(deleteTargetId);
 
     if (response.success) {
       toast.success(response.message);
@@ -62,6 +70,8 @@ export default function PaymentMethods() {
     } else {
       toast.error(response.message);
     }
+
+    setDeleteTargetId(null);
   };
 
   const setDefault = async (id: string) => {
@@ -109,10 +119,9 @@ export default function PaymentMethods() {
           <div className="space-y-4">
             {payments.map((payment) => (
               <PaymentMethodCard
-              
                 key={payment._id}
                 payment={payment}
-                onDelete={deletePayment}
+                onDelete={requestDeletePayment}
                 onSetDefault={setDefault}
               />
             ))}
@@ -148,6 +157,14 @@ export default function PaymentMethods() {
         open={showEsewaModal}
         onClose={() => setShowEsewaModal(false)}
         onSuccess={loadPayments}
+      />
+
+      <DeleteModal
+        isOpen={!!deleteTargetId}
+        onClose={() => setDeleteTargetId(null)}
+        onConfirm={confirmDeletePayment}
+        title="Delete payment method?"
+        description="This will permanently remove this payment method from your account. This action can't be undone."
       />
     </>
   );

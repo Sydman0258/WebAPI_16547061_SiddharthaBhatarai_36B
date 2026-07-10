@@ -4,13 +4,11 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useCart } from "@/lib/context/CartContext"; 
 
-// 1. Accept restaurantId along with the item object
 export default function AddToCartButton({ item, restaurantId }: { item: any; restaurantId: string }) {
     const [added, setAdded] = useState(false);
     const { addToCart } = useCart();
 
     const handleAdd = () => {
-        // 2. Spread the item details and append the real restaurantId
         addToCart({
             ...item,
             restaurantId: restaurantId

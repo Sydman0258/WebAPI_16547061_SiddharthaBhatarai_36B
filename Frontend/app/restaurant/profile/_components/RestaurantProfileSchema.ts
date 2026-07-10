@@ -5,7 +5,7 @@ export const RestaurantProfileSchema = z.object({
     description: z.string().min(1, "Description is required"),
     location: z.string().min(1, "Location is required"),
     openingHours: z.string().min(1, "Opening hours required"),
-    status: z.string().min(1, "Status is required"),
+    status: z.boolean( "Status is required"),
     restaurantImage: z.instanceof(File).optional(),
 });
 

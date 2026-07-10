@@ -4,12 +4,12 @@ import { useAuth } from "@/lib/context/authContext";
 import { useRouter, usePathname } from "next/navigation";
 
 const NAV = [
-    { href: "/restaurant", label: "Dashboard", icon: "📊" },
-    { href: "/restaurant/orders", label: "Orders", icon: "📦" },
-    { href: "/restaurant/menu", label: "Menu", icon: "🍽️" },
-    { href: "/restaurant/review", label: "Reviews", icon: "⭐" },
-    { href: "/restaurant/profile", label: "Profile", icon: "🏪" },
-    { href: "/restaurant/settings", label: "Settings", icon: "⚙️" },
+    { href: "/restaurant", label: "Dashboard" },
+    { href: "/restaurant/orders", label: "Orders" },
+    { href: "/restaurant/menu", label: "Menu"},
+    { href: "/restaurant/review", label: "Reviews" },
+    { href: "/restaurant/profile", label: "Profile" },
+    { href: "/restaurant/settings", label: "Settings"},
 ];
 
 export default function Sidebar() {
@@ -34,7 +34,7 @@ export default function Sidebar() {
                 </span>
             </div>
             <nav className="flex-1 space-y-1">
-                {NAV.map(({ href, label, icon }) => (
+                {NAV.map(({ href, label }) => (
                     <button
                         key={href}
                         onClick={() => router.push(href)}
@@ -44,7 +44,6 @@ export default function Sidebar() {
                                 : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                         }`}
                     >
-                        <span>{icon}</span>
                         {label}
                     </button>
                 ))}
