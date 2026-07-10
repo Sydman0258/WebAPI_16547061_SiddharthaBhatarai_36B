@@ -3,9 +3,9 @@ import { z } from "zod";
 export const SavedCardSchema = z.object({
   cardHolderName: z.string(),
   cardBrand: z.string(),
-  lastFourDigits: z.string(),
-  expiryMonth: z.number(),
-  expiryYear: z.number(),
+ cardNumber: z.string(),
+  expiryMonth: z.string(),
+  expiryYear: z.string(),
 });
 
 export const EsewaAccountSchema = z.object({

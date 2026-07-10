@@ -4,6 +4,7 @@ import { HttpException } from "../exceptions/http-exceptions";
 import { RestaurantService } from "../services/restaurant.service";
 import { ApiResponseHelper } from "../utils/api-response";
 import { Response, Request, NextFunction } from "express";
+import path from "path";
 
 const restaurantService = new RestaurantService();
 
@@ -18,8 +19,8 @@ export class RestaurantController {
       const restaurantData = {
         ...parseResult.data,
         userId: req.user?._id,
-        ...(req.file?.filename && {
-          restaurantImage: "/uploads/" + req.file.filename,
+        ...(req.file && {
+          restaurantImage: `/uploads/${path.basename(req.file.destination)}/${req.file.filename}`,
         }),
       };
       const restaurant = await restaurantService.createRestaurant(restaurantData);
@@ -110,8 +111,8 @@ export class RestaurantController {
       }
       const updateData = {
         ...parseResult.data,
-        ...(req.file?.filename && {
-          restaurantImage: "/uploads/" + req.file.filename,
+        ...(req.file && {
+          restaurantImage: `/uploads/${path.basename(req.file.destination)}/${req.file.filename}`,
         }),
       };
       const updated = await restaurantService.updateRestaurant(id, updateData);

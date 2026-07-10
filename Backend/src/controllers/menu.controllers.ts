@@ -4,6 +4,7 @@ import { HttpException } from "../exceptions/http-exceptions";
 import { MenuItemService } from "../services/menu.service";
 import { ApiResponseHelper } from "../utils/api-response";
 import { Response, Request } from "express";
+import path from "path";
 
 const menuItemService = new MenuItemService();
 
@@ -18,7 +19,7 @@ export class MenuItemController {
             }
             const data = {
                 ...parseResult.data,
-                ...(req.file?.filename && { imageUrl: "/uploads/" + req.file.filename }),
+                ...(req.file && { imageUrl: `/uploads/${path.basename(req.file.destination)}/${req.file.filename}` }),
             };
             const menuItem = await menuItemService.createMenuItem(restaurantId, data);
             return ApiResponseHelper.success(res, menuItem, true, 201, "Menu item created");
@@ -76,7 +77,7 @@ export class MenuItemController {
             }
             const data = {
                 ...parseResult.data,
-                ...(req.file?.filename && { imageUrl: "/uploads/" + req.file.filename }),
+                ...(req.file && { imageUrl: `/uploads/${path.basename(req.file.destination)}/${req.file.filename}` }),
             };
             const updated = await menuItemService.updateMenuItem(id, data);
             return ApiResponseHelper.success(res, updated, true, 200, "Menu item updated");

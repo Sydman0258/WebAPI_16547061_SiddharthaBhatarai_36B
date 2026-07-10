@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/context/authContext';
 import { useCart } from '@/lib/context/CartContext';
-import { useTheme } from 'next-themes';   // ← Add this import
+import ChatModal from '@/app/_component/ChatModal';
+import { LogOut } from 'lucide-react';
 
 const NAV_LINKS = [
   { href: '/customer', label: 'Home' },
@@ -19,10 +20,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const { cart } = useCart();
   const { logout } = useAuth();
-  const { theme, setTheme } = useTheme();   // ← Theme hook
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
@@ -37,24 +38,20 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
   return (
-    <nav className={`sticky top-0 z-50 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl border-b border-zinc-200 dark:border-zinc-800 transition-all duration-300 ${scrolled ? 'shadow-sm' : ''}`}>
+    <nav className={`sticky top-0 z-50 bg-white/95 backdrop-blur-2xl border-b border-stone-200 transition-all duration-300 ${scrolled ? 'shadow-sm' : ''}`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="h-16 flex items-center justify-between">
-          
+
           {/* Logo */}
-          <div 
+          <div
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => router.push('/customer')}
           >
             <div className="w-9 h-9 bg-gradient-to-br from-orange-600 to-rose-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner transition-transform group-hover:rotate-12">
               🍔
             </div>
-            <div className="font-bold text-2xl tracking-tighter text-zinc-900 dark:text-white">
+            <div className="font-bold text-2xl tracking-tighter text-stone-900">
               Grub<span className="text-orange-600">GO</span>
             </div>
           </div>
@@ -67,8 +64,8 @@ export default function Navbar() {
                 onClick={() => router.push(href)}
                 className={`px-6 py-2.5 rounded-2xl text-sm font-medium transition-all duration-200 ${
                   isActive(href)
-                    ? 'bg-orange-50 dark:bg-orange-950 text-orange-600 dark:text-orange-400 font-semibold'
-                    : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 hover:text-zinc-900 dark:hover:text-white'
+                    ? 'bg-orange-50 text-orange-600 font-semibold'
+                    : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
                 }`}
               >
                 {label}
@@ -83,19 +80,23 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="flex items-center gap-3">
-            {/* Theme Toggle */}
+            {/* AI Assistant */}
             <button
-              onClick={toggleTheme}
-              className="w-9 h-9 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 flex items-center justify-center text-xl transition-all"
-              title="Toggle theme"
+              onClick={() => setOpen(true)}
+              className="w-9 h-9 rounded-2xl bg-gradient-to-r from-orange-500 to-rose-500 hover:scale-105 transition-all flex items-center justify-center text-lg text-white shadow-md"
+              title="AI Assistant"
             >
-              {theme === 'dark' ? '☀️' : '🌙'}
+              🤖
             </button>
+            <ChatModal
+              open={open}
+              onClose={() => setOpen(false)}
+            />
 
             {/* Cart */}
             <button
               onClick={() => router.push('/customer/cart')}
-              className="relative w-9 h-9 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 flex items-center justify-center text-xl transition-colors"
+              className="relative w-9 h-9 rounded-2xl bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-xl transition-colors"
               title="Cart"
             >
               🛒
@@ -106,9 +107,18 @@ export default function Navbar() {
               )}
             </button>
 
+            {/* Desktop Logout */}
+            <button
+              onClick={logout}
+              title="Log out"
+              className="hidden md:flex w-9 h-9 rounded-2xl bg-stone-100 hover:bg-red-50 hover:text-red-600 text-stone-600 items-center justify-center transition-colors"
+            >
+              <LogOut size={17} />
+            </button>
+
             {/* Mobile Hamburger */}
             <button
-              className="md:hidden w-10 h-10 flex items-center justify-center text-2xl"
+              className="md:hidden w-10 h-10 flex items-center justify-center text-2xl text-stone-700"
               onClick={() => setMenuOpen(!menuOpen)}
             >
               ☰
@@ -119,7 +129,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden border-t bg-white dark:bg-zinc-900 py-6 px-6 space-y-2 shadow-xl">
+        <div className="md:hidden border-t bg-white py-6 px-6 space-y-2 shadow-xl">
           {NAV_LINKS.map(({ href, label }) => (
             <button
               key={href}
@@ -127,7 +137,7 @@ export default function Navbar() {
                 router.push(href);
                 setMenuOpen(false);
               }}
-              className="w-full text-left px-5 py-4 rounded-2xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-lg font-medium flex justify-between items-center transition-colors"
+              className="w-full text-left px-5 py-4 rounded-2xl hover:bg-stone-100 text-lg font-medium flex justify-between items-center transition-colors text-stone-800"
             >
               <span>{label}</span>
               {label === 'Cart' && cartCount > 0 && (
@@ -143,8 +153,9 @@ export default function Navbar() {
               logout();
               setMenuOpen(false);
             }}
-            className="w-full text-left px-5 py-4 text-red-600 hover:bg-red-50 dark:hover:bg-red-950 rounded-2xl text-lg font-medium mt-4"
+            className="w-full text-left px-5 py-4 text-red-600 hover:bg-red-50 rounded-2xl text-lg font-medium mt-4 flex items-center gap-2"
           >
+            <LogOut size={18} />
             Log out
           </button>
         </div>

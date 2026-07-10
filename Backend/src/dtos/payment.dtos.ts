@@ -3,12 +3,12 @@ import z from "zod";
 export const createCardDTO = z.object({
     cardHolderName: z.string().min(1),
     cardBrand: z.string().min(1),
-    lastFourDigits: z.string().length(4),
-    expiryMonth: z.number().int().min(1).max(12),
-    expiryYear: z.number().int(),
+    cardNumber: z.string(),
+    expiryMonth: z.string(),
+    expiryYear: z.string(),
     isDefault: z.boolean().optional(),
 });
-
+    
 export type createCardDTO = z.infer<typeof createCardDTO>;
 
 export const createEsewaDTO = z.object({
@@ -22,9 +22,9 @@ export type createEsewaDTO = z.infer<typeof createEsewaDTO>;
 export const updatePaymentDTO = z.object({
     cardHolderName: z.string().min(1).optional(),
     cardBrand: z.string().min(1).optional(),
-    lastFourDigits: z.string().length(4).optional(),
-    expiryMonth: z.number().int().min(1).max(12).optional(),
-    expiryYear: z.number().int().optional(),
+    cardNumber: z.string(),
+   expiryMonth: z.string(),
+    expiryYear: z.string(),
 
     accountName: z.string().min(1).optional(),
     mobileNumber: z.string().min(10).max(10).optional(),

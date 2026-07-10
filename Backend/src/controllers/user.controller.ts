@@ -4,6 +4,7 @@ import { HttpException } from "../exceptions/http-exceptions";
 import { userService } from "../services/user.services";
 import { ApiResponseHelper } from "../utils/api-response";
 import { Response,Request, NextFunction } from "express";
+import path from "path";
 
 const userservice=new userService();
 
@@ -75,7 +76,7 @@ export class UserController{
             }
             const updateData = {
                 ...parseResult.data,
-                ...(filename && { imageUrl: "/uploads/" + filename })
+                ...(filename && { imageUrl: `/uploads/${path.basename(req.file?.destination || "")}/${filename}` })
             }
             const updatedUser = await userservice.updateUser(userId, updateData);
             return ApiResponseHelper.success(res, updatedUser, true, 200, "User updated");

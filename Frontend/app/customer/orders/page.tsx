@@ -1,5 +1,5 @@
 // customer/orders/page.tsx
-'use client';  // ← convert to client component
+'use client';  
 
 import { useEffect, useState } from 'react';
 import { handleGetMyOrders } from "@/lib/actions/order_actions";

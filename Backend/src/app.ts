@@ -13,7 +13,7 @@ import orderRoute from "./routes/order.route";
 import reviewRoute from "./routes/review.route";
 import adminUserRoutes from "./routes/admin/user.route";
 import paymentRoutes from "./routes/payment.routes";
-
+import aiRoutes from "./routes/ollama.route"
 
 
 
@@ -37,6 +37,7 @@ app.use("/api/v1/menu", menuItemRoute);
 app.use("/api/v1/order", orderRoute);
 app.use("/api/v1/review", reviewRoute);
 app.use("/api/v1/payments", paymentRoutes);
+app.use("/api/v1/ai", aiRoutes);
 
 app.use(
     (req: Request, res: Response) => {

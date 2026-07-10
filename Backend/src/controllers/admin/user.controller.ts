@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createUserDTO, loginUserDTO, updateUserDTO, UpdatePasswordDTO, CreateUserDTOAdmin } from "../../dtos/user.dtos";
 import { ApiResponseHelper } from "../../utils/api-response";
 import { Request, Response } from "express";
+import path from "path";
 const UserService = new userService();
 
 interface QueryParams {
@@ -41,7 +42,7 @@ export class AdminUserController {
             }
 
             if (req.file) {
-                userData.data.imageUrl = "/uploads/" + req.file.filename; // add profileImage path to body
+                userData.data.imageUrl = `/uploads/${path.basename(req.file.destination)}/${req.file.filename}`;
             }
             const updatedUser = await UserService.updateUser(userId, userData.data);
             return ApiResponseHelper.success(res, updatedUser,true,200, "User updated successfully");

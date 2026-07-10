@@ -15,18 +15,18 @@ export default async function DashboardPage() {
     const firstName = name.split(" ")[0];
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+        <div className="min-h-screen bg-amber-50/40">
             <Navbar />
 
             <main className="max-w-7xl mx-auto px-6 lg:px-8 pt-10 pb-20">
                 {/* Greeting Header */}
                 <div className="mb-10">
-                    <h1 className="text-4xl lg:text-5xl font-semibold tracking-tighter text-zinc-900 dark:text-white">
+                    <h1 className="text-4xl lg:text-5xl font-semibold tracking-tighter text-stone-900">
                         Good afternoon, {firstName} 👋
                     </h1>
-                    <p className="mt-3 text-zinc-500 dark:text-zinc-400 text-lg">
+                    <p className="mt-3 text-stone-500 text-lg">
                         Delivering to{" "}
-                        <span className="font-medium text-zinc-700 dark:text-zinc-300 underline decoration-dotted cursor-pointer hover:text-orange-600">
+                        <span className="font-medium text-stone-700 underline decoration-dotted cursor-pointer hover:text-orange-600">
                             {address}
                         </span>
                     </p>
@@ -67,8 +67,8 @@ export default async function DashboardPage() {
                     ) : (
                         <div className="text-center py-20">
                             <span className="text-6xl mb-6 block">🍽️</span>
-                            <p className="text-xl text-zinc-400">No restaurants available right now</p>
-                            <p className="text-zinc-500 mt-2">Please check back later</p>
+                            <p className="text-xl text-stone-400">No restaurants available right now</p>
+                            <p className="text-stone-500 mt-2">Please check back later</p>
                         </div>
                     )}
                 </div>
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
     return (
         <section>
-            <h2 className="text-2xl font-semibold tracking-tight mb-6 text-zinc-900 dark:text-white">
+            <h2 className="text-2xl font-semibold tracking-tight mb-6 text-stone-900">
                 {title}
             </h2>
             {children}

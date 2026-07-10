@@ -28,16 +28,16 @@ const SavedCardSchema = new Schema(
             type: String,
             required: true,
         },
-        lastFourDigits: {
+        cardNumber: {
             type: String,
             required: true,
         },
         expiryMonth: {
-            type: Number,
+            type: String,
             required: true,
         },
         expiryYear: {
-            type: Number,
+            type: String,
             required: true,
         },
     },

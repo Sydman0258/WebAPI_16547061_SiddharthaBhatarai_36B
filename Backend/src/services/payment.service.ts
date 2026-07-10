@@ -30,7 +30,7 @@ export class PaymentService {
             card: {
                 cardHolderName: data.cardHolderName,
                 cardBrand: data.cardBrand,
-                lastFourDigits: data.lastFourDigits,
+                cardNumber: data.cardNumber,
                 expiryMonth: data.expiryMonth,
                 expiryYear: data.expiryYear,
             },

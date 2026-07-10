@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CreditCard, Wallet } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -20,8 +20,15 @@ export default function PaymentMethods() {
 
   const [showCardModal, setShowCardModal] = useState(false);
   const [showEsewaModal, setShowEsewaModal] = useState(false);
+  const loadInFlightRef = useRef(false);
 
   const loadPayments = async () => {
+    if (loadInFlightRef.current) {
+      return;
+    }
+
+    loadInFlightRef.current = true;
+
     try {
       setLoading(true);
 
@@ -36,6 +43,7 @@ export default function PaymentMethods() {
       toast.error(error.message);
     } finally {
       setLoading(false);
+      loadInFlightRef.current = false;
     }
   };
 
@@ -101,6 +109,7 @@ export default function PaymentMethods() {
           <div className="space-y-4">
             {payments.map((payment) => (
               <PaymentMethodCard
+              
                 key={payment._id}
                 payment={payment}
                 onDelete={deletePayment}

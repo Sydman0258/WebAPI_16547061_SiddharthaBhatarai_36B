@@ -62,16 +62,19 @@ export const API = {
     },
 
     PAYMENT: {
-        ADD_CARD: "/api/v1/payment/card",
-        ADD_ESEWA: "/api/v1/payment/esewa",
+        ADD_CARD: "/api/v1/payments/card",
+        ADD_ESEWA: "/api/v1/payments/esewa",
 
-        GET_ALL: "/api/v1/payment",
-        GET_BY_ID: (id: string) => `/api/v1/payment/${id}`,
+        GET_ALL: "/api/v1/payments",
+        GET_BY_ID: (id: string) => `/api/v1/payments/${id}`,
 
-        UPDATE: (id: string) => `/api/v1/payment/${id}`,
+        UPDATE: (id: string) => `/api/v1/payments/${id}`,
 
-        SET_DEFAULT: (id: string) => `/api/v1/payment/${id}/default`,
+        SET_DEFAULT: (id: string) => `/api/v1/payments/${id}/default`,
 
-        DELETE: (id: string) => `/api/v1/payment/${id}`,
+        DELETE: (id: string) => `/api/v1/payments/${id}`,
     },
+    OLLAMA:{
+        ASK_AI:"/api/v1/ai/chat"
+    }
 } as const;

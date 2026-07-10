@@ -1,9 +1,21 @@
+:root {
+  --color-bg: #fffaf5;
+  --color-text: #1a1a1a;
+  --color-text-muted: #71717a;
+  --color-surface: #ffffff;
+  --color-border: #eee0d5;
+  --color-accent: #c2210a;
+  --color-accent-tint: #fff1f0;
+  --color-accent-contrast: #ffffff;
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 /* Base Layout */
 .home_container {
   min-height: 100vh;
-  background-color: #fffaf5; /* Swapped to soft cream */
-  color: #1a1a1a; /* Swapped to dark charcoal */
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-family);
 }
 
 /* Navigation */
@@ -12,8 +24,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 5%;
-  background-color: #ffffff; /* Swapped to white */
-  border-bottom: 1px solid #eee0d5; /* Swapped to warm border */
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .home_logo {
@@ -21,7 +33,7 @@
   font-weight: 800;
   font-style: italic;
   letter-spacing: -1px;
-  color: #c2210a; /* Swapped to signature red */
+  color: var(--color-accent);
 }
 
 .home_auth_group {
@@ -32,7 +44,7 @@
 
 /* Auth Buttons */
 .home_register_btn {
-  color: #1a1a1a; /* Swapped to dark */
+  color: var(--color-text);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
@@ -43,14 +55,14 @@
 }
 
 .home_register_btn:hover {
-  color: #c2210a; /* Swapped to red */
-  background-color: #fff1f0; /* Swapped to light red tint */
-  border-color: #c2210a;
+  color: var(--color-accent);
+  background-color: var(--color-accent-tint);
+  border-color: var(--color-accent);
 }
 
 .home_login_btn {
-  background-color: #c2210a; /* Swapped to signature red */
-  color: #ffffff; /* Swapped to white */
+  background-color: var(--color-accent);
+  color: var(--color-accent-contrast);
   padding: 0.7rem 1.8rem;
   border: none;
   border-radius: 6px;
@@ -59,7 +71,9 @@
   transition: opacity 0.2s;
 }
 
-.home_login_btn:hover { opacity: 0.85; }
+.home_login_btn:hover {
+  opacity: 0.85;
+}
 
 /* Hero Section */
 .home_hero {
@@ -69,10 +83,12 @@
   min-height: 70vh;
 }
 
-.home_hero_content { flex: 1; }
+.home_hero_content {
+  flex: 1;
+}
 
 .home_badge {
-  color: #c2210a; /* Swapped to red */
+  color: var(--color-accent);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -87,10 +103,12 @@
   margin: 1rem 0;
 }
 
-.home_title span { color: #c2210a; } /* Swapped to red */
+.home_title span {
+  color: var(--color-accent);
+}
 
 .home_description {
-  color: #71717a; /* Swapped to muted grey-zinc */
+  color: var(--color-text-muted);
   font-size: 1.15rem;
   max-width: 480px;
   line-height: 1.6;
@@ -106,10 +124,10 @@
 .home_red_circle {
   width: 450px;
   height: 450px;
-  background-color: #fff1f0; /* Swapped to light red tint */
-  border: 1px solid #c2210a; /* Swapped to red border */
+  background-color: var(--color-accent-tint);
+  border: 1px solid var(--color-accent);
   border-radius: 50%;
-  overflow: hidden; 
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;

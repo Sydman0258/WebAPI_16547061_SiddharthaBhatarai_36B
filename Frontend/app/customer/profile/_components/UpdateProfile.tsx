@@ -3,11 +3,9 @@
 import { useState, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { User, Lock, MapPin, Camera, X } from "lucide-react";
-import { getUserData } from "@/lib/actions/auth_actions";
 
 import Navbar from "../../_components/Navbar";
 import { handleUpdateProfile } from "@/lib/actions/auth_actions";
@@ -36,6 +34,7 @@ export default function UpdateUserForm({ user }: { user: any }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { checkAuth } = useAuth();
 
+   
     const handleImageChange = (file: File | undefined, onChange: (file: File | undefined) => void) => {
         if (file) {
             const reader = new FileReader();
@@ -253,7 +252,7 @@ export default function UpdateUserForm({ user }: { user: any }) {
                                 )}
                             </div>
                         </div>
-<PaymentMethods />
+
                         <div className="pt-4 border-t border-gray-50 flex justify-end">
                             
                             <button
@@ -265,6 +264,7 @@ export default function UpdateUserForm({ user }: { user: any }) {
                             </button>
                         </div>
                     </form>
+                    <PaymentMethods />
                 </div>
             </main>
         </div>

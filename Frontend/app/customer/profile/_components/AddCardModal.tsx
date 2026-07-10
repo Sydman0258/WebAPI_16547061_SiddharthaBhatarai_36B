@@ -15,8 +15,8 @@ const CardSchema = z.object({
   cardNumber: z
     .string()
     .min(16, "Card number must be at least 16 digits"),
-  expiryMonth: z.number().min(1).max(12),
-  expiryYear: z.number().min(new Date().getFullYear()),
+  expiryMonth: z.string().min(1).max(12),
+  expiryYear: z.string(),
   cvv: z.string().min(3).max(4),
 });
 
@@ -161,7 +161,7 @@ export default function AddCardModal({
               </label>
 
               <input
-                type="number"
+                type="text"
                 {...register("expiryMonth")}
                 className="mt-2 w-full border rounded-xl px-4 py-3"
               />
@@ -177,7 +177,7 @@ export default function AddCardModal({
               </label>
 
               <input
-                type="number"
+                type="text"
                 {...register("expiryYear")}
                 className="mt-2 w-full border rounded-xl px-4 py-3"
               />

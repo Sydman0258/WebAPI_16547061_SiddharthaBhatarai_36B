@@ -1,42 +1,59 @@
 import { NextResponse, NextRequest } from "next/server";
 
-const publicRoutes = ["/login", "/register"];
+const publicRoutes = ["/login", "/register", "/forgot_password", "/reset-password", "/anauthorised","/"];
 const adminRoutes = ["/admin"];
 const restaurantRoutes = ["/restaurant"];
 
+function isPathMatch(pathname: string, routes: string[]) {
+    return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+}
+
+function getUserFromCookies(request: NextRequest) {
+    const userData = request.cookies.get("user_data")?.value;
+
+    if (!userData) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(userData);
+    } catch {
+        return null;
+    }
+}
+
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
-
     const token = request.cookies.get("auth_token")?.value;
-    const userData = request.cookies.get("user_data")?.value;
-    const user = userData ? JSON.parse(userData) : null;
+    const user = getUserFromCookies(request);
 
-    const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
+    const isPublicRoute = isPathMatch(pathname, publicRoutes);
+    const isAdminRoute = isPathMatch(pathname, adminRoutes);
+    const isRestaurantRoute = isPathMatch(pathname, restaurantRoutes);
 
     if (!token && !isPublicRoute) {
-        return NextResponse.redirect(new URL("/login", request.url));
+        return NextResponse.redirect(new URL("/", request.url));
     }
 
-    const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
-    if (token && user && isAdminRoute && user.role !== "admin") {
-        return NextResponse.redirect(new URL("/unauthorized", request.url));
-    }
-
-    // 3. Protect Restaurant Routes
-    const isRestaurantRoute = restaurantRoutes.some(route => pathname.startsWith(route));
-    if (token && user && isRestaurantRoute && user.role !== "restaurant") {
-        return NextResponse.redirect(new URL("/unauthorized", request.url));
-    }
-
-    if (token && isPublicRoute && user) {
-        if (user.role === "admin") {
-            return NextResponse.redirect(new URL("/admin", request.url));
+    if (token && user) {
+        if (isAdminRoute && user.role !== "admin") {
+            return NextResponse.redirect(new URL("/unauthorized", request.url));
         }
-        if (user.role === "restaurant") {
-            return NextResponse.redirect(new URL("/restaurant/settings", request.url));
+
+        if (isRestaurantRoute && user.role !== "restaurant") {
+            return NextResponse.redirect(new URL("/unauthorized", request.url));
         }
-        
-        return NextResponse.redirect(new URL("/customer", request.url));
+
+        if (isPublicRoute) {
+            if (user.role === "admin") {
+                return NextResponse.redirect(new URL("/admin", request.url));
+            }
+            if (user.role === "restaurant") {
+                return NextResponse.redirect(new URL("/restaurant/settings", request.url));
+            }
+
+            return NextResponse.redirect(new URL("/customer", request.url));
+        }
     }
 
     return NextResponse.next();
@@ -44,10 +61,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
-        "/register",
-        "/customer/:path*",
-        "/login",
-        "/admin/:path*",
-        "/restaurant/:path*", 
-    ]
-}
+        "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|css|js|txt|map)$).*)",
+    ],
+};

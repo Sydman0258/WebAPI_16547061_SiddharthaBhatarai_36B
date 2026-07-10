@@ -28,19 +28,20 @@ export default function RegisterPage() {
     } = useTogglePassword();
 
 
-    const onSubmit = (data: RegisterFormData) => {
-        setError('');
-        startTransition(
-            async () => {
-                try {
-                    const result = await registerUser(data);
-                    router.push("/login");
-                } catch (error: any) {
-                    setError(error?.message || 'Registration failed');
-                }
+  const onSubmit = (data: RegisterFormData) => {
+    setError('');
+    startTransition(
+        async () => {
+            const result = await registerUser(data);
+
+            if (result.success) {
+                router.push("/login");
+            } else {
+                setError(result.message || 'Registration failed');
             }
-        );
-    }
+        }
+    );
+}
 
     return (
         <div className="reg_container">
@@ -165,6 +166,7 @@ export default function RegisterPage() {
                                     </span>
                                 </label>
                             </div>
+                            {error && <p className="error_message" style={{ marginBottom: '1rem' }}>{error}</p>}
                             <button type="submit" disabled={isSubmitting ||isPending} className="reg_submit_btn">{isSubmitting ? "Creating Account" : "Sign up"}</button>
                         </form>
 

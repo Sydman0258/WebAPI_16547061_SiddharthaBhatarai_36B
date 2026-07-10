@@ -4,26 +4,46 @@ import { Request } from "express";
 import { HttpException } from "../exceptions/http-exceptions";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
+
+function getUploadFolder(req: Request, file: Express.Multer.File) {
+    const routePath = req.originalUrl.toLowerCase();
+    const fieldName = file.fieldname?.toLowerCase() || "";
+
+    if (routePath.includes("/restaurant") || fieldName.includes("restaurant")) {
+        return "restaurant";
+    }
+
+    if (routePath.includes("/menu") || fieldName.includes("item") || fieldName.includes("menu")) {
+        return "menu";
+    }
+
+    if (routePath.includes("/user") || routePath.includes("/admin") || fieldName.includes("profile")) {
+        return "user";
+    }
+
+    return "general";
+}
+
 const storage = multer.diskStorage(
     {
         destination: (
-            req: Request, 
-            file: Express.Multer.File, 
+            req: Request,
+            file: Express.Multer.File,
             cb: (error: Error | null, destination: string) => void
         ) => {
-            const uploadPath = path.join(__dirname, "../../uploads"); // __dirname -> current dir
-            if (!fs.existsSync(uploadPath)) {
-                fs.mkdirSync(uploadPath); // create uploads dir if not exists
-            }
-            cb(null, uploadPath); // save to uploads dir
+            const folder = getUploadFolder(req, file);
+            const uploadPath = path.join(__dirname, "../../uploads", folder);
+
+            fs.mkdirSync(uploadPath, { recursive: true });
+            cb(null, uploadPath);
         },
         filename: (
-            req: Request, 
-            file: Express.Multer.File, 
+            req: Request,
+            file: Express.Multer.File,
             cb: (error: Error | null, filename: string) => void
         ) => {
-            const fileSuffix = uuidv4(); // unique suffix
-            cb(null, fileSuffix + "-" + file.originalname); // unique filename
+            const fileSuffix = uuidv4();
+            cb(null, `${fileSuffix}-${file.originalname}`);
         }
     }
 );

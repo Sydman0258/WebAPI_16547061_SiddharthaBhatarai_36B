@@ -27,7 +27,7 @@ export class PaymentMongoRepository implements IPaymentRepository {
 
     async findById(id: string): Promise<IPayment | null> {
         return await Payment.findById(id)
-            .populate("userId");
+
     }
 
     async findByUserId(userId: string): Promise<IPayment[]> {
