@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, notFound } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import axiosInstance from '@/lib/api/axiosinstance';
-import { API } from '@/lib/api/endpoint';
+import { handleGetOrderById } from '@/lib/actions/order_actions';
 import UpdateStatusButton from './_component/UpdateStatusButton';
 
 export default function RestaurantOrderDetailPage() {
@@ -13,24 +12,27 @@ export default function RestaurantOrderDetailPage() {
     const [order, setOrder] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
+    const fetchOrder = async () => {
+        const result = await handleGetOrderById(id as string);
+        setOrder(result.success ? result.data : null);
+    };
+
     useEffect(() => {
-        async function fetchOrder() {
+        async function loadOrder() {
+            setLoading(true);
             try {
-                const res = await axiosInstance.get(API.ORDER.GET_BY_ID(id as string));
-                setOrder(res.data?.data ?? null);
+                await fetchOrder();
             } catch (err) {
                 console.error('Failed to fetch order:', err);
             } finally {
                 setLoading(false);
             }
         }
-        if (id) fetchOrder();
+        if (id) loadOrder();
     }, [id]);
 
-    // Re-fetch after status update since router.refresh() won't work for client components
     const refetch = async () => {
-        const res = await axiosInstance.get(API.ORDER.GET_BY_ID(id as string));
-        setOrder(res.data?.data ?? null);
+        await fetchOrder();
     };
 
     if (loading) return (
