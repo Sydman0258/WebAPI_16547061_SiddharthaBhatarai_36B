@@ -9,3 +9,9 @@ export const EMAIL_USER=process.env.EMAIL_USER;
 export const EMAIL_PASS=process.env.EMAIL_PASS;
 export const CLIENT_URL: string =
 process.env.CLIENT_URL ;
+export const ESEWA_ENVIRONMENT=process.env.ESEWA_ENVIRONMENT;
+export const ESEWA_PRODUCT_CODE= process.env.ESEWA_PRODUCT_CODE;
+export const ESEWA_SECRET_KEY=process.env.ESEWA_SECRET_KEY;
+export const ESEWA_PAYMENT_URL=process.env.ESEWA_PAYMENT_URL;
+export const ESEWA_STATUS_URL=process.env.ESEWA_STATUS_URL;
+export const ESEWA_RETURN_URL=process.env.ESEWA_RETURN_URL;
