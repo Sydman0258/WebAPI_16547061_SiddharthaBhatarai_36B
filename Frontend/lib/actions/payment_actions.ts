@@ -2,7 +2,6 @@
 
 import {
     addCard as apiAddCard,
-    addEsewa as apiAddEsewa,
     getPayments as fetchPayments,
     getPaymentById as fetchPaymentById,
     updatePayment as apiUpdatePayment,
@@ -82,32 +81,6 @@ export async function handleAddCard(data: any) {
         return {
             success: false,
             message: error.message || "Failed to add card",
-        };
-    }
-}
-
-export async function handleAddEsewa(data: any) {
-    try {
-        const result = await apiAddEsewa(data);
-
-        if (result.success) {
-            revalidatePath("/payments");
-
-            return {
-                success: true,
-                data: result.data,
-                message: result.message || "eSewa account added successfully",
-            };
-        }
-
-        return {
-            success: false,
-            message: result.message || "Failed to add eSewa account",
-        };
-    } catch (error: any) {
-        return {
-            success: false,
-            message: error.message || "Failed to add eSewa account",
         };
     }
 }

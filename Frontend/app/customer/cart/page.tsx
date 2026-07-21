@@ -274,11 +274,11 @@ export default function CartPage() {
                               <div className="flex items-center gap-2">
 
                                 <span className="text-xl">
-                                  🟢
+                                  �
                                 </span>
 
                                 <h4 className="font-semibold">
-                                  eSewa
+                                  Wallet
                                 </h4>
 
                                 {payment.isDefault && (
@@ -290,11 +290,11 @@ export default function CartPage() {
                               </div>
 
                               <p className="text-sm text-gray-500 mt-1">
-                                {payment.esewa.mobileNumber}
+                                Saved payment method
                               </p>
 
                               <p className="text-xs text-gray-400">
-                                {payment.esewa.accountName}
+                                Ready for checkout
                               </p>
                             </>
                           )}

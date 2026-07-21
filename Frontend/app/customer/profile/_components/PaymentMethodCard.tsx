@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, Smartphone, Star, Trash2 } from "lucide-react";
+import { CreditCard, Star, Trash2, Wallet } from "lucide-react";
 
 interface PaymentMethodCardProps {
   payment: any;
@@ -14,6 +14,7 @@ export default function PaymentMethodCard({
   onSetDefault,
 }: PaymentMethodCardProps) {
   const isCard = payment.paymentType === "card";
+  const title = isCard ? payment?.card?.cardBrand || "Card" : "Wallet";
 
   return (
     <div className="border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
@@ -23,22 +24,18 @@ export default function PaymentMethodCard({
             className={`w-12 h-12 rounded-xl flex items-center justify-center ${
               isCard
                 ? "bg-blue-50 text-blue-600"
-                : "bg-green-50 text-green-600"
+                : "bg-purple-50 text-purple-600"
             }`}
           >
             {isCard ? (
               <CreditCard size={22} />
             ) : (
-              <Smartphone size={22} />
+              <Wallet size={22} />
             )}
           </div>
 
           <div>
-            <h3 className="font-semibold text-gray-900">
-              {isCard
-                ? payment.card.cardBrand
-                : "eSewa"}
-            </h3>
+            <h3 className="font-semibold text-gray-900">{title}</h3>
 
             {isCard ? (
               <>
@@ -57,12 +54,10 @@ export default function PaymentMethodCard({
               </>
             ) : (
               <>
-                <p className="text-sm text-gray-500">
-                  {payment.esewa.mobileNumber}
-                </p>
+                <p className="text-sm text-gray-500">Saved payment method</p>
 
                 <p className="text-xs text-gray-400 mt-1">
-                  {payment.esewa.accountName}
+                  Ready for checkout
                 </p>
               </>
             )}

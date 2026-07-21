@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 
 import PaymentMethodCard from "./PaymentMethodCard";
 import AddCardModal from "./AddCardModal";
-import AddEsewaModal from "./AddEsewaModal";
 import DeleteModal from "../../../_component/DeleteModel";
 
 import {
@@ -20,7 +19,6 @@ export default function PaymentMethods() {
   const [loading, setLoading] = useState(true);
 
   const [showCardModal, setShowCardModal] = useState(false);
-  const [showEsewaModal, setShowEsewaModal] = useState(false);
 
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
@@ -95,7 +93,7 @@ export default function PaymentMethods() {
             </h2>
 
             <p className="text-sm text-gray-500 mt-1">
-              Manage your saved cards and eSewa accounts.
+              Manage your saved cards and payment methods.
             </p>
           </div>
         </div>
@@ -136,26 +134,12 @@ export default function PaymentMethods() {
             <CreditCard size={18} />
             Add Card
           </button>
-
-          <button
-            onClick={() => setShowEsewaModal(true)}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl border border-green-300 text-green-700 hover:bg-green-50 transition-colors"
-          >
-            <Wallet size={18} />
-            Add eSewa
-          </button>
         </div>
       </div>
 
       <AddCardModal
         open={showCardModal}
         onClose={() => setShowCardModal(false)}
-        onSuccess={loadPayments}
-      />
-
-      <AddEsewaModal
-        open={showEsewaModal}
-        onClose={() => setShowEsewaModal(false)}
         onSuccess={loadPayments}
       />
 

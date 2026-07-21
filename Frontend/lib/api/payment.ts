@@ -10,15 +10,6 @@ export const addCard = async (data: any) => {
     }
 };
 
-export const addEsewa = async (data: any) => {
-    try {
-        const response = await axiosInstance.post(API.PAYMENT.ADD_ESEWA, data);
-        return response.data;
-    } catch (error: any) {
-        throw new Error(error?.response?.data?.message || "Failed to add eSewa account");
-    }
-};
-
 export const getPayments = async () => {
     try {
         const response = await axiosInstance.get(API.PAYMENT.GET_ALL);

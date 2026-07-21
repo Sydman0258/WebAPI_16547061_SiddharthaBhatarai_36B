@@ -63,7 +63,6 @@ export const API = {
 
     PAYMENT: {
         ADD_CARD: "/api/v1/payments/card",
-        ADD_ESEWA: "/api/v1/payments/esewa",
 
         GET_ALL: "/api/v1/payments",
         GET_BY_ID: (id: string) => `/api/v1/payments/${id}`,
