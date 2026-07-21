@@ -72,6 +72,8 @@ export const API = {
         SET_DEFAULT: (id: string) => `/api/v1/payments/${id}/default`,
 
         DELETE: (id: string) => `/api/v1/payments/${id}`,
+        INITIATE_ESEWA: "/api/v1/payments/esewa/initiate",
+        VERIFY_ESEWA: "/api/v1/payments/esewa/verify",
     },
     OLLAMA:{
         ASK_AI:"/api/v1/ai/chat"

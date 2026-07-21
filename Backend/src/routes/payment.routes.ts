@@ -18,6 +18,20 @@ router.post(
     paymentController.addEsewaAccount.bind(paymentController)
 );
 
+// Initiate eSewa payment
+router.post(
+    "/esewa/initiate",
+    authorizedMiddleware,
+    paymentController.initiateEsewaPayment.bind(paymentController)
+);
+
+// Verify eSewa payment
+router.post(
+    "/esewa/verify",
+    authorizedMiddleware,
+    paymentController.verifyEsewaPayment.bind(paymentController)
+);
+
 // Get payment methods
 router.get(
     "/",

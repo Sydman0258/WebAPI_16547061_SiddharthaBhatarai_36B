@@ -7,6 +7,7 @@ import {
     updatePayment as apiUpdatePayment,
     setDefaultPayment as apiSetDefaultPayment,
     deletePayment as apiDeletePayment,
+    initiateEsewaPaymentApi, verifyEsewaPaymentApi
 } from "@/lib/api/payment";
 
 import { revalidatePath } from "next/cache";
@@ -162,3 +163,26 @@ export async function handleDeletePayment(id: string) {
         };
     }
 }
+export const initiateEsewaPayment = async (orderId: string, amount: number) => {
+  try {
+    const data = await initiateEsewaPaymentApi(orderId, amount);
+    return { success: true, payload: data.payload };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Failed to initiate payment",
+    };
+  }
+};
+
+export const verifyEsewaPayment = async (encodedData: string) => {
+  try {
+    const data = await verifyEsewaPaymentApi(encodedData);
+    return { success: true, data };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Payment verification failed",
+    };
+  }
+};

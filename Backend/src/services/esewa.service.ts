@@ -1,5 +1,6 @@
 import https from "https";
 import { esewaConfig } from "../config/esewa.config";
+import { generateEsewaSignature, generateTransactionUuid } from "../utils/esewa.utils";
 
 
 export type EsewaStatusResult = {
@@ -9,6 +10,21 @@ export type EsewaStatusResult = {
   status: string;
   referenceId: string;
   raw: Record<string, unknown>;
+};
+
+export type EsewaPaymentPayload = {
+  amount: string;
+  tax_amount: string;
+  total_amount: string;
+  transaction_uuid: string;
+  product_code: string;
+  product_service_charge: string;
+  product_delivery_charge: string;
+  success_url: string;
+  failure_url: string;
+  signed_field_names: string;
+  signature: string;
+  esewa_payment_url: string;
 };
 
 const parseNumber = (value: unknown): number => {
@@ -94,5 +110,39 @@ export const checkEsewaTransactionStatus = async ({
     status: String(raw.status ?? "").toUpperCase(),
     referenceId: String(raw.ref_id ?? raw.refId ?? ""),
     raw,
+  };
+};
+
+export const initiateEsewaPayment = (
+  orderId: string,
+  amount: number
+): EsewaPaymentPayload => {
+  const transactionUuid = generateTransactionUuid(orderId);
+  const productCode = esewaConfig.productCode;
+  const totalAmount = amount.toFixed(2);
+  const taxAmount = "0";
+  const productServiceCharge = "0";
+  const productDeliveryCharge = "0";
+
+  // Generate signature
+  const signature = generateEsewaSignature(totalAmount, transactionUuid, productCode);
+
+const origin = new URL(esewaConfig.returnUrl).origin;
+
+const successUrl = `${origin}/customer/orders/esewa-callback?status=success`;
+const failureUrl = `${origin}/customer/orders/esewa-callback?status=failed`;
+  return {
+    amount: totalAmount,
+    tax_amount: taxAmount,
+    total_amount: totalAmount,
+    transaction_uuid: transactionUuid,
+    product_code: productCode,
+    product_service_charge: productServiceCharge,
+    product_delivery_charge: productDeliveryCharge,
+    success_url: successUrl,
+    failure_url: failureUrl,
+    signed_field_names: "total_amount,transaction_uuid,product_code",
+    signature,
+    esewa_payment_url: esewaConfig.paymentUrl,
   };
 };

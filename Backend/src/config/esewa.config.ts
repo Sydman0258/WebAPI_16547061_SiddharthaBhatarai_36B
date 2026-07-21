@@ -22,9 +22,8 @@ export const esewaConfig = {
       ? "https://esewa.com.np/api/epay/transaction/status/"
       : "https://rc.esewa.com.np/api/epay/transaction/status/"),
 
-  // Flutter intercepts these HTTPS redirects inside its WebView.
   returnUrl: (
     process.env.ESEWA_RETURN_URL ||
-    "https://freshcart.app/payment/esewa"
+    "http://localhost:3000"
   ).replace(/\/$/, ""),
 };

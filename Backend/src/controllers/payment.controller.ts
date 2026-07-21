@@ -4,6 +4,7 @@ import {
     createCardDTO,
     createEsewaDTO,
     updatePaymentDTO,
+    initiateEsewaDTO,
 } from "../dtos/payment.dtos";
 
 const paymentService = new PaymentService();
@@ -113,6 +114,41 @@ export class PaymentController {
                 success: true,
                 message: "Payment deleted successfully",
             });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async initiateEsewaPayment(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = initiateEsewaDTO.parse(req.body);
+
+            const payload = await paymentService.initiateEsewaPayment(
+                data.orderId,
+                req.body.amount
+            );
+
+            res.status(200).json({
+                success: true,
+                message: "eSewa payment initiated successfully",
+                payload,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async verifyEsewaPayment(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { data: encodedData } = req.body;
+
+            if (!encodedData) {
+                throw new Error("Encoded payment data is required");
+            }
+
+            const result = await paymentService.verifyEsewaPayment(encodedData);
+
+            res.status(200).json(result);
         } catch (error) {
             next(error);
         }

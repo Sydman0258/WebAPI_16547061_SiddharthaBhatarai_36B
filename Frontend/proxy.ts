@@ -5,7 +5,10 @@ const adminRoutes = ["/admin"];
 const restaurantRoutes = ["/restaurant"];
 
 function isPathMatch(pathname: string, routes: string[]) {
-    return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+    return routes.some((route) => {
+        if (route === "/") return pathname === "/";
+        return pathname === route || pathname.startsWith(`${route}/`);
+    });
 }
 
 function getUserFromCookies(request: NextRequest) {
@@ -24,6 +27,9 @@ function getUserFromCookies(request: NextRequest) {
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
+    if (pathname.includes("/esewa-callback")) {
+    return NextResponse.next();
+  }
     const token = request.cookies.get("auth_token")?.value;
     const user = getUserFromCookies(request);
 
