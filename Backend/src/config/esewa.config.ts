@@ -19,8 +19,8 @@ export const esewaConfig = {
   statusUrl:
     process.env.ESEWA_STATUS_URL ||
     (isProduction
-      ? "https://esewa.com.np/api/epay/transaction/status/"
-      : "https://rc.esewa.com.np/api/epay/transaction/status/"),
+      ? "https://epay.esewa.com.np/api/epay/transaction/status/"
+      : "https://rc-epay.esewa.com.np/api/epay/transaction/status/"),
 
   returnUrl: (
     process.env.ESEWA_RETURN_URL ||

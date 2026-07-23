@@ -23,6 +23,15 @@ const nextConfig: NextConfig = {
       },
       // {..}
     ]
+  },
+  async redirects() {
+    return [
+      {
+        source: '/payment/esewa/customer/orders/esewa-callback',
+        destination: '/customer/orders/esewa-callback',
+        permanent: true,
+      },
+    ];
   }
 };
 

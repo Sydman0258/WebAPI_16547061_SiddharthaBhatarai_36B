@@ -17,14 +17,12 @@ describe('Auth API Integration Tests', () => {
     let token: string;
 
     beforeAll(async () => {
-        // Clean test user before running tests
         await UserModel.deleteOne({ email: testUser.email });
         await UserModel.deleteOne({ email: 'another@example.com' });
         await UserModel.deleteOne({ email: 'invalidrole@example.com' });
     });
 
     afterAll(async () => {
-        // Clean test users after tests
         await UserModel.deleteOne({ email: testUser.email });
         await UserModel.deleteOne({ email: 'another@example.com' });
         await UserModel.deleteOne({ email: 'invalidrole@example.com' });
@@ -78,20 +76,20 @@ describe('Auth API Integration Tests', () => {
         });
 
         test('should reject invalid role', async () => {
-            const invalidUser = {
-                ...testUser,
-                email: 'invalidrole@example.com',
-                username: 'invalidroleuser',
-                role: 'admin'
-            };
+    const invalidUser = {
+        ...testUser,
+        email: 'invalidrole@example.com',
+        username: 'invalidroleuser',
+        role: 'superadmin'
+    };
 
-            const res = await request(app)
-                .post('/api/v1/customer/register')
-                .send(invalidUser);
+    const res = await request(app)
+        .post('/api/v1/customer/register')
+        .send(invalidUser);
 
-            expect(res.statusCode).toBe(400);
-            expect(res.body.success).toBe(false);
-        });
+    expect(res.statusCode).toBe(400);
+    expect(res.body.success).toBe(false);
+});
 
         test('should reject invalid email format', async () => {
             const invalidUser = {
@@ -124,6 +122,7 @@ describe('Auth API Integration Tests', () => {
             expect(res.body.data.token).toBeDefined();
 
             token = res.body.data.token;
+
         });
 
         test('should fail with invalid email', async () => {

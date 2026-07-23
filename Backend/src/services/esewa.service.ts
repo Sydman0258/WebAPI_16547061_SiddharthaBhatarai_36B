@@ -129,8 +129,8 @@ export const initiateEsewaPayment = (
 
 const origin = new URL(esewaConfig.returnUrl).origin;
 
-const successUrl = `${origin}/customer/orders/esewa-callback?status=success`;
-const failureUrl = `${origin}/customer/orders/esewa-callback?status=failed`;
+const successUrl = `${origin}/customer/orders/esewa-success`;
+const failureUrl = `${origin}/customer/orders/esewa-failure`;
   return {
     amount: totalAmount,
     tax_amount: taxAmount,
