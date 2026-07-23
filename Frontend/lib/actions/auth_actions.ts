@@ -29,12 +29,17 @@ export async function registerUser(data: RegisterFormData) {
 export async function loginUser(data: LoginFormData) {
     try {
         const res = await login(data);
-        if (res.success) {
+
+        // Ensure both success flag AND required payload exist
+        if (res?.success && res?.data?.token) {
             const token = res.data.token;
             console.log("Received token:", token);
 
-            await setCookieToken(token);
-            await storeUserData(res.data.user);
+            // Run cookie writes in parallel to save execution time
+            await Promise.all([
+                setCookieToken(token),
+                res.data.user ? storeUserData(res.data.user) : Promise.resolve()
+            ]);
            
             return {
                 success: true,
@@ -42,9 +47,17 @@ export async function loginUser(data: LoginFormData) {
                 message: "Login successful"
             };
         }
-        return { success: false, message: res.message || "Login failed" };
-    } catch (err: Error | any) {
-        return { success: false, message: err.message || "Login failed" };
+
+        return { 
+            success: false, 
+            message: res?.message || "Invalid credentials or missing token from server." 
+        };
+    } catch (err: any) {
+        console.error("loginUser Server Action Error:", err);
+        return { 
+            success: false, 
+            message: err?.message || "An unexpected error occurred during login." 
+        };
     }
 }
 

@@ -25,7 +25,7 @@ export const getMyOrder=async ()=>{
      const serverError = e?.response?.data?.message 
             || e?.response?.data?.error 
             || e?.message 
-            || "Order Creation Failed";
+            || "Order Retrieval Failed";
             
         throw new Error(serverError);
    }

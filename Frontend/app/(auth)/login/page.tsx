@@ -5,7 +5,7 @@ import './login.css';
 import { Mail, Lock, EyeOff, Eye } from 'lucide-react';
 import loginZod from '../_component/loginZod';
 import { useTogglePassword } from '@/hooks/tooglepassword';
-import { useState, useEffect } from 'react'; // 1. Import useEffect
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/authContext';
 import { loginUser } from '@/lib/actions/auth_actions';
@@ -16,51 +16,74 @@ export default function LoginPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = loginZod();
   const { inputType, isVisible, toggleVisibility } = useTogglePassword();
   const [error, setError] = useState('');
-  const [mounted, setMounted] = useState(false); // 2. Add mounted state
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { setUser, setIsAuthenticated } = useAuth();
 
-  // 3. Set mounted to true on initial client ]
   useEffect(() => {
     setMounted(true);
   }, []);
 
-const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     setError('');
+    
     try {
-        const result = await loginUser(data);
-        if (result.success) {
-            const token = result.data?.token;
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const role = payload.role;
+      const result = await loginUser(data);
 
-            setUser(result.data.user);
-            setIsAuthenticated(true);
+      if (!result?.success || !result?.data) {
+        setError(result?.message || 'Invalid email or password.');
+        return;
+      }
 
-            if (role === 'customer') {
-                router.replace('/customer');
-            } else if (role === 'driver') {
-                router.replace('/driver');}
-               else if (role === 'admin') {
-                router.replace('/admin');
-            
-            } else if (role === 'restaurant') {
-                const restaurant = await getMyRestaurant();
-                if (restaurant?.success && restaurant?.data) {
-                    router.replace('/restaurant/');
-                } else {
-                    router.replace('/restaurant/onboarding');
-                }
-            } else {
-                router.replace('/dashboard');
-            }
-        } else {
-            setError(result.message || 'Login Failed');
+      const token = result.data.token;
+      if (!token) {
+        setError('Authentication token missing from server response.');
+        return;
+      }
+
+      // Safely parse JWT payload
+      let role = result.data.user?.role;
+      if (!role) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          role = payload?.role;
+        } catch (e) {
+          console.error("Failed to parse JWT token:", e);
         }
+      }
+
+      // Set global state
+      setUser(result.data.user);
+      setIsAuthenticated(true);
+
+      // Route according to user role
+      switch (role) {
+        case 'customer':
+          router.replace('/customer');
+          break;
+        case 'driver':
+          router.replace('/driver');
+          break;
+        case 'admin':
+          router.replace('/admin');
+          break;
+        case 'restaurant': {
+          const restaurant = await getMyRestaurant();
+          if (restaurant?.success && restaurant?.data) {
+            router.replace('/restaurant/');
+          } else {
+            router.replace('/restaurant/onboarding');
+          }
+          break;
+        }
+        default:
+          router.replace('/dashboard');
+          break;
+      }
     } catch (err: any) {
-        setError(err?.message || 'Login failed');
+      setError(err?.message || 'A network error occurred. Please try again.');
     }
-};
+  };
 
   return (
     <div className="login_container">
@@ -112,7 +135,6 @@ const onSubmit = async (data: LoginFormData) => {
                 </div>
                 <div className="input_wrapper">
                   <Lock size={18} className="input_icon" />
-                  {/* 4. Default input to password type on server to guarantee server match */}
                   <input 
                     type={mounted ? inputType : "password"} 
                     placeholder="••••••••"
@@ -124,7 +146,6 @@ const onSubmit = async (data: LoginFormData) => {
                     onClick={toggleVisibility} 
                     aria-label={isVisible ? "Hide password" : "Show password"}
                   >
-                    {/* 5. Only switch the icon once the client layout is completely mounted */}
                     {mounted && isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                 </div>
@@ -139,7 +160,7 @@ const onSubmit = async (data: LoginFormData) => {
             </form>
 
             <p className="signup_prompt">
-              New to GrubGO? <a href="/register">Create an account</a>
+              New to GrubGO? <Link href="/register">Create an account</Link>
             </p>
           </div>
         </div>

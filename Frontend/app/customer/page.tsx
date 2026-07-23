@@ -1,29 +1,38 @@
 import { getUserData } from "@/lib/actions/auth_actions";
 import { getAllRestaurants } from "@/lib/actions/restaurant_actions";
-import Navbar from "./_components/Navbar";
-import RestaurantCard from "./_components/RestaurantCard";
-import RecentOrderTimeline from "./_components/RecentOrderTimeline";
-import Link from "next/link";
 import { handleGetMyOrders } from "@/lib/actions/order_actions";
 
+import Navbar from "./_components/Navbar";
+import RestaurantCard from "./_components/RestaurantCard";
+import Link from "next/link";
+
 export default async function DashboardPage() {
-    const userResult = await getUserData();
-    const restaurantsResult = await getAllRestaurants();
-    const ordersResult = await handleGetMyOrders();
+    const [userResult, restaurantsResult, ordersResult] = await Promise.all([
+        getUserData(),
+        getAllRestaurants(),
+        handleGetMyOrders(),
+    ]);
 
     const user = userResult?.data;
     const restaurants = restaurantsResult?.data || [];
+    const recentOrders = ordersResult?.data || [];
 
     const name = user?.fullname || user?.username || user?.email || "Guest";
     const address = user?.address || user?.savedAddress || "Set your delivery location";
     const firstName = name.split(" ")[0];
 
-    const activeOrder = user?.activeOrder || null;
-    const recentOrders = ordersResult?.data || [];
-
     const hour = new Date().getHours();
-    const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+    const greeting =
+        hour < 12 ? "Good morning" :
+        hour < 18 ? "Good afternoon" : "Good evening";
 
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+function getImageUrl(path?: string) {
+    if (!path) return undefined;
+    if (path.startsWith("http")) return path;
+    return `${API_BASE_URL}${path}`;
+}
     return (
         <div className="min-h-screen bg-amber-50/20 text-stone-800">
             <Navbar />
@@ -31,7 +40,7 @@ export default async function DashboardPage() {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-                    {/* Main Feed Content Column (75% / 9 Cols) */}
+                    {/* Main Content */}
                     <div className="lg:col-span-9 space-y-8">
                         <div className="pb-2">
                             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-stone-900">
@@ -44,19 +53,54 @@ export default async function DashboardPage() {
                                 </span>
                                 <Link
                                     href="/customer/profile"
-                                    className="text-orange-600 font-medium text-xs hover:underline ml-1 bg-orange-50 px-2 py-0.5 rounded-md"
+                                    className="text-orange-600 font-medium text-xs hover:underline ml-1 bg-orange-50 px-2 py-0.5 rounded-md transition-colors"
                                 >
                                     Change
                                 </Link>
                             </p>
                         </div>
 
-                        <section>
-                            <h2 className="text-xl font-bold text-stone-900 mb-6 tracking-tight">
-                                All Restaurants
-                            </h2>
+                        {/* Hero */}
+                        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-stone-900 to-stone-800 text-white">
+                            <div className="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:20px_20px]" />
+                            
+                            <div className="relative px-8 py-8 sm:py-12 flex flex-col items-start">
+                                <div className="max-w-md">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-xs font-medium tracking-wider mb-4">
+                                        FRESH • FAST • LOCAL
+                                    </div>
+                                    
+                                    <h2 className="text-3xl sm:text-4xl font-bold tracking-tighter leading-none mb-4">
+                                        Craving something<br />delicious?
+                                    </h2>
+                                    
+                                    <p className="text-lg text-stone-300 mb-8">
+                                        Explore top-rated restaurants and popular dishes delivered straight to your door in minutes.
+                                    </p>
+                                    
+                                    <Link
+                                        href="/customer/restaurants"
+                                        className="inline-flex items-center px-8 py-3.5 bg-white text-black font-semibold rounded-2xl hover:bg-amber-50 active:scale-[0.985] transition-all"
+                                    >
+                                        Browse restaurants
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
 
-                            {restaurants && restaurants.length > 0 ? (
+                        <section id="restaurants">
+                            <div className="flex items-end justify-between mb-6">
+                                <h2 className="text-xl font-bold text-stone-900 tracking-tight">
+                                    All Restaurants
+                                </h2>
+                                {restaurants.length > 0 && (
+                                    <Link href="/customer/restaurants" className="text-orange-600 text-sm font-medium hover:underline">
+                                        View all
+                                    </Link>
+                                )}
+                            </div>
+
+                            {restaurants.length > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                                     {restaurants.map((restaurant: any) => (
                                         <RestaurantCard key={restaurant._id} restaurant={restaurant} />
@@ -64,7 +108,6 @@ export default async function DashboardPage() {
                                 </div>
                             ) : (
                                 <div className="text-center py-20 bg-white border border-stone-200/60 rounded-[2rem] p-6">
-                                    <span className="text-5xl mb-3 block">🍽️</span>
                                     <h3 className="text-base font-semibold text-stone-800">No restaurants open nearby</h3>
                                     <p className="text-stone-400 text-xs mt-1">Please adjust your address or check back later.</p>
                                 </div>
@@ -72,47 +115,61 @@ export default async function DashboardPage() {
                         </section>
                     </div>
 
-                    {/* Right Utilities Column (25% / 3 Cols) */}
-                    <aside className="lg:col-span-3 space-y-6 lg:sticky lg:top-6">
+                    {/* Sidebar */}
+                    <div className="lg:col-span-3 space-y-6">
+                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-stone-100 lg:sticky lg:top-6">
+                            <div className="flex items-center justify-between mb-5">
+                                <h3 className="font-semibold text-lg text-stone-900">Recent Orders</h3>
+                                <Link href="/customer/orders" className="text-orange-600 text-sm font-medium hover:underline">
+                                    View all
+                                </Link>
+                            </div>
 
-                        {/* Dynamic Order Tracker Container */}
-{activeOrder ? (
-    <div className="bg-white border border-stone-200/60 rounded-[2rem] p-5 shadow-sm shadow-stone-900/[0.02]">
-        <div className="flex items-center justify-between mb-4">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md">
-                Live Tracker
-            </span>
-            <span className="text-xs font-semibold text-emerald-600 animate-pulse flex items-center gap-1">
-                ● {activeOrder.statusLabel || "Active"}
-            </span>
-        </div>
+                           {recentOrders.length > 0 ? (
+    <div className="space-y-4">
+        {recentOrders.slice(0, 3).map((order: any) => {
+            const restaurantName = order.restaurantId?.restaurantName ?? "Restaurant";
+            const restaurantImage = getImageUrl(order.restaurantId?.restaurantImage);
 
-        <h3 className="font-bold text-stone-900 text-base">{activeOrder.restaurantName}</h3>
-        <p className="text-xs text-stone-500 mt-0.5">Order #{activeOrder.orderNumber} • {activeOrder.itemCount} items</p>
-
-        <div className="my-4 flex items-center gap-3 bg-stone-50 p-3 rounded-xl border border-stone-100">
-            <span className="text-2xl">{activeOrder.statusIcon || "🛵"}</span>
-            <div>
-                <p className="text-xs font-bold text-stone-800">{activeOrder.statusDescription}</p>
-                <p className="text-[11px] text-stone-400">{activeOrder.subStatusText}</p>
-            </div>
-        </div>
-
-        <div className="flex items-center justify-between text-xs font-semibold pt-1">
-            <span className="text-stone-500">Estimated Arrival:</span>
-            <span className="text-stone-900 text-sm font-bold">{activeOrder.eta}</span>
-        </div>
+            return (
+                <div key={order._id} className="flex gap-3 bg-stone-50 rounded-2xl p-3 hover:bg-stone-100 transition-colors">
+                    {restaurantImage ? (
+                        <img
+                            src={restaurantImage}
+                            alt={restaurantName}
+                            className="w-12 h-12 rounded-xl flex-shrink-0 object-cover"
+                        />
+                    ) : (
+                        <div className="w-12 h-12 bg-stone-200 rounded-xl flex-shrink-0 flex items-center justify-center text-stone-400 text-xs font-semibold">
+                            {restaurantName.charAt(0).toUpperCase()}
+                        </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                        <p className="font-medium text-stone-800 truncate">
+                            {restaurantName}
+                        </p>
+                        <p className="text-sm text-stone-500 truncate">
+                            {order.items?.length || 0} items • ${order.total?.toFixed(2)}
+                        </p>
+                        <p className={`text-xs mt-1 font-medium ${
+                            order.status === 'delivered' ? 'text-emerald-600' :
+                            order.status === 'preparing' ? 'text-amber-600' : 'text-stone-500'
+                        }`}>
+                            {order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || "Pending"}
+                        </p>
+                    </div>
+                </div>
+            );
+        })}
     </div>
 ) : (
-    recentOrders?.[0]?._id && (
-<div className="-ml-3 -mr-2 overflow-hidden">
-            <RecentOrderTimeline orderId={recentOrders[0]._id} />
-        </div>
-    )
+    <div className="text-center py-12 bg-stone-50 rounded-2xl">
+        <p className="text-stone-400 text-sm">No recent orders yet</p>
+        <p className="text-stone-400 text-xs mt-1">Your past orders will appear here</p>
+    </div>
 )}
-                        
-                    </aside>
-
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>

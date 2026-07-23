@@ -24,7 +24,7 @@ export async function handleGetMyOrders() {
         if (result.success) {
             return {
                 success: true,
-                data: result.data, // This will be your array of orders
+                data: result.data, 
                 message: result.message || "Orders fetched successfully",
             };
         }
