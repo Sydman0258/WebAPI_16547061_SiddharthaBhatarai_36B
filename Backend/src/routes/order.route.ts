@@ -5,7 +5,6 @@ import { authorizedMiddleware } from "../middleware/authorized.middleware";
 const orderController = new OrderController();
 const router = Router();
 
-// Protected routes (all order routes require auth)
 router.post("/create", authorizedMiddleware, orderController.createOrder);
 router.get("/my", authorizedMiddleware, orderController.getMyOrders);
 router.get("/restaurant/:restaurantId", authorizedMiddleware, orderController.getOrdersByRestaurant);

@@ -1,0 +1,25 @@
+{
+  "cookies": [
+    {
+      "name": "auth_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNjM2YzMzZjQwOGZlZWQ5YTU2MDlmMiIsImVtYWlsIjoiY3VzdG9tZXJAdGVzdC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3ODQ5MDI4MTMsImV4cCI6MTc4NDkyMDgxM30.82PElQheMGblhbs1GC_yz3yrfEN3jKKc1DRDVKYBswA",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "user_data",
+      "value": "%7B%22_id%22%3A%226a636c33f408feed9a5609f2%22%2C%22fullname%22%3A%22test%22%2C%22email%22%3A%22customer%40test.com%22%2C%22username%22%3A%22test%22%2C%22role%22%3A%22customer%22%7D",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

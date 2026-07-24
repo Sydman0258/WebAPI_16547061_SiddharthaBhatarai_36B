@@ -1,6 +1,7 @@
 // tsconfig.json
 {
   "compilerOptions": {
+    "isolatedModules": true,
     "module": "nodenext",
     "target": "esnext",
     "outDir": "dist",

@@ -3,6 +3,16 @@ module.exports = {
     testEnvironment: 'node',
     roots: ['<rootDir>/src'],
     testMatch: ['**/__tests__/**/*.test.ts'],
+    transform: {
+        '^.+\\.tsx?$': [
+            'ts-jest',
+            {
+                tsconfig: {
+                    rootDir: './',
+                },
+            },
+        ],
+    },
     collectCoverageFrom: [
         'src/**/*.ts',
         '!src/**/*.d.ts',
@@ -15,4 +25,3 @@ module.exports = {
         "^uuid$": "<rootDir>/src/__tests__/__mocks__/uuid.js",
     },
 };
-

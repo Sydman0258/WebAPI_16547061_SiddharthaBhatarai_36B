@@ -3,6 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 const publicRoutes = ["/login", "/register", "/forgot_password", "/reset-password", "/anauthorised","/"];
 const adminRoutes = ["/admin"];
 const restaurantRoutes = ["/restaurant"];
+const customerRoutes = ["/customer"];
 
 function isPathMatch(pathname: string, routes: string[]) {
     return routes.some((route) => {
@@ -36,6 +37,7 @@ export async function proxy(request: NextRequest) {
     const isPublicRoute = isPathMatch(pathname, publicRoutes);
     const isAdminRoute = isPathMatch(pathname, adminRoutes);
     const isRestaurantRoute = isPathMatch(pathname, restaurantRoutes);
+const isCustomerRoute = isPathMatch(pathname, customerRoutes);
 
     if (!token && !isPublicRoute) {
         return NextResponse.redirect(new URL("/", request.url));
@@ -49,7 +51,9 @@ export async function proxy(request: NextRequest) {
         if (isRestaurantRoute && user.role !== "restaurant") {
             return NextResponse.redirect(new URL("/unauthorized", request.url));
         }
-
+ if (isCustomerRoute && user.role !== "customer") {
+        return NextResponse.redirect(new URL("/unauthorized", request.url));
+    }
         if (isPublicRoute) {
             if (user.role === "admin") {
                 return NextResponse.redirect(new URL("/admin", request.url));

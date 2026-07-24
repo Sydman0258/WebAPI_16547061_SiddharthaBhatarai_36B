@@ -14,7 +14,7 @@ import { getMyRestaurant } from '@/lib/api/restaurant';
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = loginZod();
-  const { inputType, isVisible, toggleVisibility } = useTogglePassword();
+  const { inputType, isVisible, toggleVisibility } = useTogglePassword(); 
   const [error, setError] = useState('');
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -118,7 +118,7 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="form_group">
-                <label>Email Address</label>
+                <label htmlFor="email">Email Address</label>
                 <div className="input_wrapper">
                   <Mail size={18} className="input_icon" />
                   <input type="email" placeholder="name@example.com" {...register("email")} />

@@ -4,7 +4,9 @@
   "main": "index.ts",
   "scripts": {
     "dev": "npx tsx --watch index.ts",
-    "test": "jest --verbose --detectOpenHandles"
+    "test": "jest --verbose --detectOpenHandles",
+        "test:coverage": "jest --coverage --verbose --detectOpenHandles"
+
   },
   "keywords": [],
   "author": "",

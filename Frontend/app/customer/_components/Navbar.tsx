@@ -48,7 +48,7 @@ export default function Navbar() {
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => router.push('/customer')}
           >
-            <div className="w-9 h-9 bg-gradient-to-br from-orange-600 to-rose-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner transition-transform group-hover:rotate-12">
+            <div className="w-9 h-9 bg-linear-to-br from-orange-600 to-rose-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-inner transition-transform group-hover:rotate-12">
               🍔
             </div>
             <div className="font-bold text-2xl tracking-tighter text-stone-900">
@@ -70,7 +70,7 @@ export default function Navbar() {
               >
                 {label}
                 {label === 'Cart' && cartCount > 0 && (
-                  <span className="ml-2 bg-orange-600 text-white text-[10px] px-2 py-px rounded-full font-mono min-w-[18px] inline-flex items-center justify-center">
+                  <span className="ml-2 bg-orange-600 text-white text-[10px] px-2 py-px rounded-full font-mono min-w-4.5 inline-flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
@@ -83,7 +83,7 @@ export default function Navbar() {
             {/* AI Assistant */}
             <button
               onClick={() => setOpen(true)}
-              className="w-9 h-9 rounded-2xl bg-gradient-to-r from-orange-500 to-rose-500 hover:scale-105 transition-all flex items-center justify-center text-lg text-white shadow-md"
+              className="w-9 h-9 rounded-2xl bg-linear-to-r from-orange-500 to-rose-500 hover:scale-105 transition-all flex items-center justify-center text-lg text-white shadow-md"
               title="AI Assistant"
             >
               🤖
