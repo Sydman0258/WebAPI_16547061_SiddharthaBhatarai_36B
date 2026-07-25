@@ -24,11 +24,7 @@ const NAV_ITEMS = [
     href: "/admin/users",
     icon: Users,
   },
-  {
-    label: "Settings",
-    href: "/admin/settings",
-    icon: Settings,
-  },
+ 
 ];
 
 interface AdminSidebarProps {
@@ -58,7 +54,7 @@ const { logout } = useAuth(); // 2. GET THE LOGOUT FUNCTION HERE
         )}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center gap-2 px-5 border-b border-gray-700 flex-shrink-0">
+        <div className="h-16 flex items-center gap-2 px-5 border-b border-gray-700 shrink-0">
           <ShieldCheck size={22} className="text-indigo-400" />
           <span className="font-bold text-lg tracking-tight">AdminHub</span>
         </div>
