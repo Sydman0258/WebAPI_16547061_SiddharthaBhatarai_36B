@@ -39,7 +39,7 @@ export default function RestaurantOrdersPage() {
             </div>
             {loading ? (
                 <div className="text-center py-16 text-gray-400">
-                    <span className="text-4xl block mb-3 animate-pulse">📦</span>
+                    <span className="text-4xl block mb-3 animate-pulse"></span>
                     <p className="text-sm font-medium">Loading orders...</p>
                 </div>
             ) : (

@@ -37,14 +37,14 @@ export default function RestaurantOrderDetailPage() {
 
     if (loading) return (
         <div className="text-center py-20 text-gray-400">
-            <span className="text-4xl block mb-3 animate-pulse">📦</span>
+            <span className="text-4xl block mb-3 animate-pulse"></span>
             <p className="text-sm">Loading order...</p>
         </div>
     );
 
     if (!order) return (
         <div className="text-center py-20 text-gray-400">
-            <span className="text-4xl block mb-3">⚠️</span>
+            <span className="text-4xl block mb-3"></span>
             <p className="text-sm">Order not found.</p>
             <button onClick={() => router.push('/restaurant/orders')} className="mt-4 text-sm text-red-600 underline">
                 Back to Orders

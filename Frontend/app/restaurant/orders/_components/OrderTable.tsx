@@ -27,7 +27,7 @@ export default function OrderTable({ orders }: { orders: any[] }) {
             <OrderFilterTabs active={activeFilter} onChange={setActiveFilter} />
             {filtered.length === 0 ? (
                 <div className="text-center py-16 text-gray-400">
-                    <span className="text-4xl block mb-3">📦</span>
+                    <span className="text-4xl block mb-3"></span>
                     <p className="text-sm font-medium">No orders found</p>
                 </div>
             ) : (

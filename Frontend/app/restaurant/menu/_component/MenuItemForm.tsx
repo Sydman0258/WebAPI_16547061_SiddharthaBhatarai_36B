@@ -38,8 +38,7 @@ export default function MenuItemForm({
         formData.append("category", data.category);
         if (data.description) formData.append("description", data.description);
         
-        // Explicitly append numbers (FormData converts these to strings, 
-        // so your BACKEND schema must use z.coerce.number() as well!)
+  
         formData.append("price", String(data.price));
         formData.append("preparationTime", String(data.preparationTime));
 

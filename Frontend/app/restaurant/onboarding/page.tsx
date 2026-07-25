@@ -51,7 +51,7 @@ export default function RestaurantOnboarding() {
 
         const payload = {
             ...formData,
-            status: "active",
+            status: true,
         };
 
         try {

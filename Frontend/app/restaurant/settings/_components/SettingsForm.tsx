@@ -49,22 +49,7 @@ export default function SettingsForm({ restaurant }: { restaurant: any }) {
 
     return (
         <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 space-y-5">
-            {/* STATUS DROP-DOWN */}
-            <div className="space-y-1.5">
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                    Restaurant Status
-                </label>
-                <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="w-full px-3 py-2.5 text-black bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
-                >
-                    <option value="open">Open</option>
-                    <option value="closed">Closed</option>
-                    <option value="busy">Busy</option>
-                </select>
-            </div>
-
+           
             {/* OPENING HOURS */}
             <div className="space-y-1.5">
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">

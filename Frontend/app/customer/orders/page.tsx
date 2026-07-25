@@ -25,18 +25,18 @@ export default function OrdersPage() {
             <Navbar />
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-8 border-b border-gray-100 pb-5">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">My Orders 📦</h1>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">My Orders </h1>
                     <p className="mt-2 text-sm text-gray-500">Track your current and past orders</p>
                 </div>
 
                 {loading ? (
                     <div className="text-center py-20">
-                        <span className="text-5xl block mb-4 animate-pulse">📦</span>
+                        <span className="text-5xl block mb-4 animate-pulse"></span>
                         <p className="text-gray-400 text-sm">Loading your orders...</p>
                     </div>
                 ) : orders.length === 0 ? (
                     <div className="text-center py-20">
-                        <span className="text-5xl block mb-4">📦</span>
+                        <span className="text-5xl block mb-4"></span>
                         <h2 className="text-xl font-bold text-gray-800">No orders yet</h2>
                         <p className="text-sm text-gray-400 mt-2">Your order history will appear here.</p>
                     </div>

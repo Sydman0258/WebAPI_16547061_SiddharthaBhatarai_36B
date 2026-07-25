@@ -146,7 +146,6 @@ export default function RegisterPage() {
                                         <select className="reg_select" required defaultValue="" {...register("role")}>
                                             <option value="" disabled>Select your role</option>
                                             <option value="customer">Customer (Order Food)</option>
-                                            <option value="driver">Driver (Deliver Food)</option>
                                             <option value="restaurant">Restaurant (Sell Food)</option>
 
                                         </select>

@@ -77,7 +77,7 @@ export default function MenuTable({
             {items.length === 0 ? (
                 <div className="bg-white border border-gray-100 rounded-2xl shadow-sm py-20 text-center text-gray-400">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 text-2xl shadow-inner">
-                        🍳
+                    X
                     </div>
                     <p className="text-sm font-semibold text-gray-700">No items on the menu yet</p>
                     <p className="text-xs text-gray-400 mt-1">Click the button above to begin showcasing your dishes.</p>

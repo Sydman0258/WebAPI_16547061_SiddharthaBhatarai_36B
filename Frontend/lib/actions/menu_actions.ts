@@ -54,7 +54,8 @@ export const getMenuById = async (id: string) => {
 };
 
 
-export const updateMenu = async (id: string, data: any) => {
+export const updateMenu = async (id: string,    restaurantId: string,
+ data: any) => {
     try {
         const response = await axiosInstance.put(API.MENU.UPDATE(id), data);
         return response.data;
