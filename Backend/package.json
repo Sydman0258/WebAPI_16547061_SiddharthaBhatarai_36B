@@ -4,6 +4,8 @@
   "main": "index.ts",
   "scripts": {
     "dev": "npx tsx --watch index.ts",
+    "build": "tsc",
+"start": "node dist/index.js",
     "test": "jest --verbose --detectOpenHandles",
         "test:coverage": "jest --coverage --verbose --detectOpenHandles"
 

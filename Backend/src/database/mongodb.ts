@@ -1,17 +1,20 @@
 import mongoose from "mongoose";
-import { MONGO_URL } from "../config/constant";
+import { MONGO_URL,MONGODB_URI } from "../config/constant";
+
+
+const uri =
+  process.env.NODE_ENV === "production"
+    ?MONGODB_URI!
+    : MONGO_URL!;
 
 export const connectToMongoose = async () => {
-
-    try {
-        await mongoose.connect(MONGO_URL);
-        console.log("Connected To MongoDB")
-    }
-    catch (e) {
-        console.log("Connection Failed", e);
-        throw e;
-    }
-
+  try {
+    await mongoose.connect(uri);
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export const connectToMongoDBTest = async () => {

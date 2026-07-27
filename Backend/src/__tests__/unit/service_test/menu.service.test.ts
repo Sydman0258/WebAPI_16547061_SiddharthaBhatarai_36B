@@ -48,6 +48,7 @@ describe("MenuItemService", () => {
             price: 250,
             category: "Veg",
             preparationTime: 15,
+            isAvailable:true
         };
 
         it("should successfully create a new menu item if restaurant exists", async () => {

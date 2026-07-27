@@ -3,11 +3,17 @@
   "compilerOptions": {
     "isolatedModules": true,
     "module": "nodenext",
+        "moduleResolution": "NodeNext",
+    "rootDir": ".",
+
     "target": "esnext",
     "outDir": "dist",
     "esModuleInterop": true,
     "strict": false,
     "skipLibCheck": true,
     "types": ["jest", "node"],
-  }
+  },
+
+   "include": ["index.ts", "src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "coverage"]
 }
