@@ -56,7 +56,7 @@ export default function OrderDetailsPage() {
                     <>
                         <div className="mb-6 border-b border-gray-100 pb-5">
                             <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
-                                Order Details 📦
+                                Order Details 
                             </h1>
                             <p className="text-xs text-gray-400 mt-1 font-mono">#{order._id}</p>
                         </div>

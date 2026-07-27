@@ -2,7 +2,6 @@ import https from "https";
 import { esewaConfig } from "../config/esewa.config";
 import { generateEsewaSignature, generateTransactionUuid } from "../utils/esewa.utils";
 
-
 export type EsewaStatusResult = {
   productCode: string;
   transactionUuid: string;
@@ -113,24 +112,50 @@ export const checkEsewaTransactionStatus = async ({
   };
 };
 
+/**
+ * Normalizes a URL/origin candidate string. 
+ * Automatically adds a protocol prefix (http://) if omitted.
+ */
+function normalizeOrigin(value?: string | null): string {
+  if (!value) return "http://localhost:3000";
+
+  let candidate = value.trim();
+  if (!/^https?:\/\//i.test(candidate)) {
+    candidate = `http://${candidate}`;
+  }
+
+  try {
+    return new URL(candidate).origin;
+  } catch {
+    return "http://localhost:3000";
+  }
+}
+
 export const initiateEsewaPayment = (
   orderId: string,
-  amount: number
+  amount: number | string
 ): EsewaPaymentPayload => {
   const transactionUuid = generateTransactionUuid(orderId);
   const productCode = esewaConfig.productCode;
-  const totalAmount = amount.toFixed(2);
+
+  const numericAmount = typeof amount === "number" ? amount : parseFloat(amount);
+  const totalAmount = numericAmount.toFixed(2);
+
   const taxAmount = "0";
   const productServiceCharge = "0";
   const productDeliveryCharge = "0";
 
-  // Generate signature
-  const signature = generateEsewaSignature(totalAmount, transactionUuid, productCode);
+  const signature = generateEsewaSignature(
+    totalAmount,
+    transactionUuid,
+    productCode
+  );
 
-const origin = new URL(esewaConfig.returnUrl).origin;
+  const origin = normalizeOrigin(esewaConfig.returnUrl);
 
-const successUrl = `${origin}/customer/orders/esewa-callback`;
-const failureUrl = `${origin}/customer/orders/esewa-callback?status=failed`;
+  const successUrl = `${origin}/customer/orders/esewa-callback`;
+  const failureUrl = `${origin}/customer/orders/esewa-callback?status=failed`;
+
   return {
     amount: totalAmount,
     tax_amount: taxAmount,
