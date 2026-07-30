@@ -133,7 +133,8 @@ function normalizeOrigin(value?: string | null): string {
 
 export const initiateEsewaPayment = (
   orderId: string,
-  amount: number | string
+  amount: number | string,
+  clientOrigin?: string
 ): EsewaPaymentPayload => {
   const transactionUuid = generateTransactionUuid(orderId);
   const productCode = esewaConfig.productCode;
@@ -151,7 +152,7 @@ export const initiateEsewaPayment = (
     productCode
   );
 
-  const origin = normalizeOrigin(esewaConfig.returnUrl);
+  const origin = normalizeOrigin(clientOrigin || esewaConfig.returnUrl);
 
   const successUrl = `${origin}/customer/orders/esewa-callback`;
   const failureUrl = `${origin}/customer/orders/esewa-callback?status=failed`;

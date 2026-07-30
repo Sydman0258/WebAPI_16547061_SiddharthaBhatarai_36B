@@ -11,6 +11,8 @@ import {
 import mongoose from "mongoose";
 import { initiateEsewaPayment as generateEsewaPayment } from "./esewa.service";
 import { checkEsewaTransactionStatus } from "./esewa.service";
+import { esewaConfig } from "../config/esewa.config";
+import { verifyEsewaResponseSignature } from "../utils/esewa.utils";
 
 const paymentRepository = new PaymentMongoRepository();
 const orderRepository = new OrderMongoRepository();
@@ -127,74 +129,117 @@ export class PaymentService {
         );
     }
 
-    async initiateEsewaPayment(orderId: string, amount: number) {
-        // Verify order exists
-        const order = await orderRepository.findById(orderId);
-        if (!order) {
-            throw new HttpException(404, "Order not found");
-        }
+async initiateEsewaPayment(orderId: string, clientOrigin?: string) {
+  const order = await orderRepository.findById(orderId);
 
-        // Generate eSewa payment payload
-        const payload = generateEsewaPayment(orderId, amount);
+  if (!order) {
+    throw new HttpException(404, "Order not found");
+  }
 
-        return payload;
+  if (order.paymentMethod !== "esewa") {
+    throw new HttpException(
+      400,
+      "Order is not configured for eSewa payment"
+    );
+  }
+
+  const payload = generateEsewaPayment(
+    orderId,
+    Number(order.total).toFixed(2),
+    clientOrigin
+  );
+
+  await orderRepository.update(orderId, {
+    esewaTransactionUuid: payload.transaction_uuid,
+    paymentStatus: "pending",
+  });
+
+  return payload;
+}
+
+  async verifyEsewaPayment(encodedData: string) {
+  try {
+    const decodedData = Buffer.from(encodedData, "base64").toString("utf-8");
+    const parsedData = JSON.parse(decodedData);
+
+    if (!verifyEsewaResponseSignature(parsedData)) {
+      throw new HttpException(400, "Invalid eSewa callback signature");
     }
 
-   async verifyEsewaPayment(encodedData: string) {
-    try {
-        // Decode the base64 encoded data
-        const decodedData = Buffer.from(encodedData, "base64").toString("utf-8");
-        const parsedData = JSON.parse(decodedData);
+    const {
+      transaction_uuid,
+      transaction_code,
+      status,
+      total_amount,
+      product_code,
+    } = parsedData;
 
-        // Extract transaction details
-        const { transaction_uuid, transaction_code, status, total_amount } = parsedData;
-
-        // Verify with eSewa
-        const esewaStatus = await checkEsewaTransactionStatus({
-            transactionUuid: transaction_uuid,
-            totalAmount: parseFloat(total_amount),
-        });
-
-        if (esewaStatus.status !== "COMPLETE") {
-            throw new HttpException(400, "Payment not completed");
-        }
-
-        // Parse UUID: handles formats like GB-{orderId}-{timestamp} or FC-{orderId}-{timestamp}
-        const uuidParts = transaction_uuid.split("-");
-        
-        // Ensure array has at least prefix, orderId, and timestamp
-        if (uuidParts.length < 3) {
-            throw new HttpException(400, "Invalid transaction UUID format");
-        }
-
-        // orderId is the middle element
-        const orderId = uuidParts[1];
-
-        // Update order payment status
-        const order = await orderRepository.findById(orderId);
-        if (!order) {
-            throw new HttpException(404, "Order not found");
-        }
-
-        await orderRepository.update(orderId, {
-            paymentStatus: "paid",
-            paymentMethod: "esewa",
-        });
-
-        return {
-            success: true,
-            message: "Payment verified successfully",
-            data: {
-                orderId,
-                status: esewaStatus.status,
-                referenceId: esewaStatus.referenceId,
-            },
-        };
-    } catch (error: any) {
-        if (error instanceof HttpException) {
-            throw error;
-        }
-        throw new HttpException(400, error.message || "Payment verification failed");
+    if (status !== "COMPLETE" || product_code !== esewaConfig.productCode) {
+      throw new HttpException(400, "Invalid eSewa payment response");
     }
+
+    const esewaStatus = await checkEsewaTransactionStatus({
+      transactionUuid: transaction_uuid,
+      totalAmount: Number(total_amount),
+    });
+
+    if (esewaStatus.status !== "COMPLETE") {
+      throw new HttpException(400, "Payment not completed");
+    }
+
+    const uuidParts = String(transaction_uuid).split("-");
+
+    if (uuidParts.length < 3) {
+      throw new HttpException(400, "Invalid transaction UUID format");
+    }
+
+    const orderId = uuidParts[1];
+    const order = await orderRepository.findById(orderId);
+
+    if (!order) {
+      throw new HttpException(404, "Order not found");
+    }
+
+    const expectedAmount = Number(order.total);
+
+    if (
+      order.esewaTransactionUuid !== transaction_uuid ||
+      Number(total_amount) !== expectedAmount ||
+      esewaStatus.transactionUuid !== transaction_uuid ||
+      esewaStatus.productCode !== esewaConfig.productCode ||
+      esewaStatus.totalAmount !== expectedAmount
+    ) {
+      throw new HttpException(
+        400,
+        "eSewa payment details do not match the order"
+      );
+    }
+
+    await orderRepository.update(orderId, {
+      paymentStatus: "paid",
+      paymentMethod: "esewa",
+      transactionId: transaction_code,
+      paidAt: new Date(),
+    });
+
+    return {
+      success: true,
+      message: "Payment verified successfully",
+      data: {
+        orderId,
+        status: esewaStatus.status,
+        referenceId: esewaStatus.referenceId,
+      },
+    };
+  } catch (error: any) {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+
+    throw new HttpException(
+      400,
+      error.message || "Payment verification failed"
+    );
+  }
 }
 }

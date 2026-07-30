@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface CartItem {
   _id: string;
@@ -15,33 +21,102 @@ interface CartItem {
 interface CartContextType {
   cart: CartItem[];
   addToCart: (item: any) => void;
-  updateQuantity: (id: string, amount: number) => void; 
-  clearCart: () => void; // 1. Added clearCart here so TypeScript knows it's shared
+  updateQuantity: (id: string, amount: number) => void;
+  clearCart: () => void;
+  isLoaded: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
 
-  const clearCart = () => setCart([]);
+export function CartProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+
+  // Load cart after component mounts (client only)
+  useEffect(() => {
+
+    const savedCart = localStorage.getItem("cart");
+
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+
+    setIsLoaded(true);
+
+  }, []);
+
+
+
+  // Save cart whenever cart changes
+  useEffect(() => {
+
+    if (isLoaded) {
+      localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+      );
+    }
+
+  }, [cart, isLoaded]);
+
+
+
+  const clearCart = () => {
+
+    setCart([]);
+
+    localStorage.removeItem("cart");
+
+  };
+
+
 
   const addToCart = (item: any) => {
-    const itemId = item._id || item.id || item.menuItemId;
-    const itemRestaurantId = item.restaurantId || item.restaurant?._id;
+
+    const itemId =
+      item._id ||
+      item.id ||
+      item.menuItemId;
+
+
+    const itemRestaurantId =
+      item.restaurantId ||
+      item.restaurant?._id;
+
+
 
     setCart((prevCart) => {
-      const existingItem = prevCart.find((i) => i._id === itemId);
-      
+
+      const existingItem = prevCart.find(
+        (i) => i._id === itemId
+      );
+
+
       if (existingItem) {
+
         return prevCart.map((i) =>
-          i._id === itemId ? { ...i, quantity: i.quantity + 1 } : i
+          i._id === itemId
+            ? {
+                ...i,
+                quantity: i.quantity + 1,
+              }
+            : i
         );
+
       }
-      
-      // 2. Map properties cleanly so it explicitly builds an _id parameter
+
+
+
       return [
-        ...prevCart, 
+        ...prevCart,
+
         {
           _id: itemId,
           name: item.name,
@@ -49,32 +124,89 @@ export function CartProvider({ children }: { children: ReactNode }) {
           image: item.image,
           customNotes: item.customNotes,
           restaurantId: itemRestaurantId,
-          quantity: 1
-        }
+          quantity: 1,
+        },
+
       ];
+
     });
+
   };
 
-  const updateQuantity = (id: string, amount: number) => {
+
+
+
+  const updateQuantity = (
+    id: string,
+    amount: number
+  ) => {
+
     setCart((prev) =>
+
       prev
-        .map((item) => (item._id === id ? { ...item, quantity: item.quantity + amount } : item))
-        .filter((item) => item.quantity > 0) 
+
+        .map((item) =>
+          item._id === id
+            ? {
+                ...item,
+                quantity:
+                  item.quantity + amount,
+              }
+            : item
+        )
+
+        .filter(
+          (item) =>
+            item.quantity > 0
+        )
+
     );
+
   };
+
+
+
 
   return (
-    // 3. Exposing everything seamlessly down to layout.tsx children wrappers
-    <CartContext.Provider value={{ cart, addToCart, updateQuantity, clearCart }}>
+
+    <CartContext.Provider
+
+      value={{
+        cart,
+        addToCart,
+        updateQuantity,
+        clearCart,
+        isLoaded,
+      }}
+
+    >
+
       {children}
+
     </CartContext.Provider>
+
   );
+
 }
 
+
+
+
+
 export function useCart() {
+
   const context = useContext(CartContext);
+
+
   if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
+
+    throw new Error(
+      "useCart must be used within a CartProvider"
+    );
+
   }
+
+
   return context;
+
 }

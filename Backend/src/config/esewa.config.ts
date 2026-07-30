@@ -17,10 +17,10 @@ export const esewaConfig = {
       : "https://rc-epay.esewa.com.np/api/epay/main/v2/form"),
 
   statusUrl:
-    process.env.ESEWA_STATUS_URL ||
-    (isProduction
-      ? "https://epay.esewa.com.np/api/epay/transaction/status/"
-      : "https://rc-epay.esewa.com.np/api/epay/transaction/status/"),
+  process.env.ESEWA_STATUS_URL ||
+  (isProduction
+    ? "https://esewa.com.np/api/epay/transaction/status/"
+    : "https://rc.esewa.com.np/api/epay/transaction/status/"),
 
   returnUrl: (
     process.env.ESEWA_RETURN_URL ||

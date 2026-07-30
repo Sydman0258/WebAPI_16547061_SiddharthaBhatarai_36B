@@ -22,28 +22,41 @@ export async function askOllama(prompt: string) {
     }
 
     const menuItems = await query
-        .populate("restaurantId", "name")
+        .populate("restaurantId", "restaurantName")
         .limit(15)
         .select("name price description category restaurantId")
         .lean();
 
     const context = menuItems
         .map((item: any) => {
-            const restaurantName = item.restaurantId?.name ?? "Unknown restaurant";
-            return `- ${item.name} ($${item.price}) at ${restaurantName} [${item.category}] — ${item.description}`;
+const restaurantName =
+    item.restaurantId?.restaurantName ?? "Unknown restaurant";
+                return `- ${item.name} ($${item.price}) at ${restaurantName} [${item.category}] — ${item.description}`;
         })
         .join("\n");
 
     const fullPrompt = `
-You are a food recommendation assistant for a food delivery app.
-Here is real, currently available menu data pulled from the database:
+You are a food recommendation assistant for a Nepal-based food delivery app.
+
+Here is the real, currently available menu data pulled from the database:
 
 ${context || "No matching menu items found."}
 
-Using ONLY the menu data above, answer the user's question.
-Do not invent menu items, prices, or restaurants that are not listed above.
-If nothing matches, say so honestly.
+Rules:
+- Use ONLY the menu data above.
+- Do NOT invent menu items, restaurants, or prices.
+- All prices are in Nepalese Rupees (Rs.).
+- NEVER use "$", "USD", or dollars.
+- Whenever mentioning a price, always write it as "Rs. <amount>".
+- If nothing matches the user's request, clearly state that no matching menu items were found.
 
+Example:
+Correct: Chicken Momo - Rs. 250
+Correct: Pizza - Rs. 650
+Wrong: Chicken Momo - $250
+Wrong: Pizza - USD 650
+
+Now answer the user's question.
 User question: ${prompt}
 `.trim();
 

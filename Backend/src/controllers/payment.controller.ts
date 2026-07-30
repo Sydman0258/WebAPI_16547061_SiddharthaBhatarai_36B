@@ -122,11 +122,12 @@ export class PaymentController {
     async initiateEsewaPayment(req: Request, res: Response, next: NextFunction) {
         try {
             const data = initiateEsewaDTO.parse(req.body);
+            const clientOrigin = req.headers["x-client-origin"] as any | undefined;
 
-            const payload = await paymentService.initiateEsewaPayment(
-                data.orderId,
-                req.body.amount
-            );
+const payload = await paymentService.initiateEsewaPayment(
+  data.orderId,
+  clientOrigin
+);
 
             res.status(200).json({
                 success: true,

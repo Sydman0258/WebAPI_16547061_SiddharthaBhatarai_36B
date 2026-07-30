@@ -150,7 +150,7 @@ const createdOrderId = response.data?._id || (response as any).orderId;
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 border-b border-gray-100 pb-4">
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-            Your Basket 🛒
+            Your Basket 
           </h1>
           <p className="text-sm text-gray-500 mt-1">
             Review your meal details and checkout seamlessly.
@@ -159,7 +159,7 @@ const createdOrderId = response.data?._id || (response as any).orderId;
 
         {cart.length === 0 ? (
           <div className="text-center py-20 max-w-md mx-auto">
-            <span className="text-5xl block mb-4">🛒</span>
+            <span className="text-5xl block mb-4"></span>
             <h2 className="text-xl font-bold text-gray-800">Your cart is currently empty</h2>
             <p className="text-sm text-gray-400 mt-2 mb-6">
               Looks like you haven't added any dishes yet.

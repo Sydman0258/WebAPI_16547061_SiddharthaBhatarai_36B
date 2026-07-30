@@ -34,6 +34,7 @@ export interface IOrder extends Document {
   paymentMethod: "card" | "esewa" | "cash";
   paymentStatus: "pending" | "paid" | "failed";
   transactionId?: string;
+  esewaTransactionUuid?: string;
   paidAt?: Date;
 
   notes?: string;
@@ -147,10 +148,15 @@ const orderModelSchema = new Schema<IOrder>(
     transactionId: {
       type: String,
     },
-
+esewaTransactionUuid: {
+  type: String,
+  index: true,
+  sparse: true,
+},
     paidAt: {
       type: Date,
     },
+    
 
     notes: {
       type: String,

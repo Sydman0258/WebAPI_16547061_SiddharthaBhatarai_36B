@@ -2,7 +2,7 @@
   "cookies": [
     {
       "name": "auth_token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNjM2YzMzZjQwOGZlZWQ5YTU2MDlmMiIsImVtYWlsIjoiY3VzdG9tZXJAdGVzdC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3ODQ5MDc2OTgsImV4cCI6MTc4NDkyNTY5OH0.00v7EGZK1pQWFzpZWJHFK0eVPNx7c5WnmeWTgC8krTk",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNjM2YzMzZjQwOGZlZWQ5YTU2MDlmMiIsImVtYWlsIjoiY3VzdG9tZXJAdGVzdC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE3ODUyNTQ5MTQsImV4cCI6MTc4NTI3MjkxNH0.1OeL66VgrfoUFiuPcPooVTA25yCHkW4dSygj6EVbUx4",
       "domain": "localhost",
       "path": "/",
       "expires": -1,
@@ -21,5 +21,15 @@
       "sameSite": "Lax"
     }
   ],
-  "origins": []
+  "origins": [
+    {
+      "origin": "http://localhost:3000",
+      "localStorage": [
+        {
+          "name": "cart",
+          "value": "[]"
+        }
+      ]
+    }
+  ]
 }

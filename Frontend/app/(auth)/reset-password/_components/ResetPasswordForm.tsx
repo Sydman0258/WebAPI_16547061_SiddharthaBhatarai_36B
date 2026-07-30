@@ -61,7 +61,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
                     </p>
                     <div className="w-full rounded-[40px] overflow-hidden shadow-[0_25px_50px_-12px_rgba(194,33,10,0.15)] h-125">
                         <img
-                            src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWtwMGZmczB1bXVqc3JlcTVqbXdxbHBnYndtbDl6Y3ByYm9tc205byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BK1EfIsdkKZMY/giphy.gif"
+                            src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExczBobXE4Zmo0MWw2NW10MjdqNzdqOHFmdmJwZDF5M25nMmJja3c3NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/It8qXjo51Rgek/giphy.gif"
                             alt="Delicious food"
                             className="w-full h-full object-cover block"
                         />
